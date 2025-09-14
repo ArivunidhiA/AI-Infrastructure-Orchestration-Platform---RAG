@@ -5,9 +5,12 @@
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
     "dev": "cd frontend && npm start",
-    "start": "cd backend && python main.py"
+    "netlify:dev": "netlify dev"
   },
-  "keywords": ["ai", "infrastructure", "rag", "fastapi", "react"],
+  "keywords": ["ai", "infrastructure", "rag", "netlify", "react"],
   "author": "Arivunidhi A",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
 }
