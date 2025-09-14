@@ -41,7 +41,45 @@ const APITest = () => {
     testEndpoint('metrics', '/api/metrics');
     testEndpoint('optimization', '/api/optimization');
     testEndpoint('performance', '/api/performance');
-    testEndpoint('rag', '/api/rag');
+    testRAG();
+  };
+
+  const testRAG = async () => {
+    setLoading(true);
+    try {
+      console.log('Testing RAG: POST /api/rag');
+      const response = await fetch('/api/rag', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: 'test query' })
+      });
+      console.log('RAG response:', response);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('RAG data:', data);
+        setResults(prev => ({
+          ...prev,
+          rag: { success: true, data, status: response.status }
+        }));
+      } else {
+        console.error('RAG failed:', response.status, response.statusText);
+        setResults(prev => ({
+          ...prev,
+          rag: { success: false, error: `${response.status}: ${response.statusText}`, status: response.status }
+        }));
+      }
+    } catch (error) {
+      console.error('RAG error:', error);
+      setResults(prev => ({
+        ...prev,
+        rag: { success: false, error: error.message }
+      }));
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

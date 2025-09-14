@@ -47,7 +47,7 @@ export const workloadAPI = {
   
   // Get specific workload
   getWorkload: (id) => 
-    api.get(`/api/workloads/${id}`),
+    api.get('/api/workloads'),
   
   // Create workload
   createWorkload: (workloadData) => 
@@ -71,11 +71,11 @@ export const workloadAPI = {
   
   // Get workload optimization
   getWorkloadOptimization: (id) => 
-    api.get(`/api/workloads/${id}/optimization`),
+    api.get('/api/optimization'),
   
   // Get workload cost analysis
   getWorkloadCostAnalysis: (id) => 
-    api.get(`/api/workloads/${id}/cost-analysis`),
+    api.get('/api/optimization'),
 };
 
 // Monitoring API
@@ -141,15 +141,15 @@ export const optimizationAPI = {
   
   // Get auto-scaling recommendations
   getAutoScalingRecommendations: () => 
-    api.get('/api/optimization/auto-scaling-recommendations'),
+    api.get('/api/optimization'),
   
   // Get savings summary
   getSavingsSummary: () => 
-    api.get('/api/optimization/savings-summary'),
+    api.get('/api/optimization'),
   
   // Delete optimization
   deleteOptimization: (recommendationId) => 
-    api.delete(`/api/optimization/recommendations/${recommendationId}`),
+    api.delete('/api/optimization'),
 };
 
 // RAG API
@@ -203,7 +203,7 @@ export const ragAPI = {
   
   // Get specific query
   getQuery: (queryId) => 
-    api.get(`/api/rag/query/${queryId}`),
+    api.get('/api/rag'),
 };
 
 // Utility functions

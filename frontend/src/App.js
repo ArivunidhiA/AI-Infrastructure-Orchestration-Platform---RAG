@@ -27,7 +27,7 @@ function App() {
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'dashboard':
-        return <APITest />;
+        return <Dashboard />;
       case 'workloads':
         return <WorkloadManager />;
       case 'optimization':
