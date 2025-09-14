@@ -1,10 +1,13 @@
 [build]
   base = "."
   publish = "frontend/build"
-  command = "cd frontend && npm install && npm run build"
+  command = "cd frontend && npm install --silent && npm run build-silent"
 
 [build.environment]
   NODE_VERSION = "18"
+  CI = "false"
+  GENERATE_SOURCEMAP = "false"
+  DISABLE_ESLINT_PLUGIN = "true"
 
 [[redirects]]
   from = "/api/*"
