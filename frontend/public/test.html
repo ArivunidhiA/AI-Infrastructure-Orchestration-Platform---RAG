@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Page</title>
+</head>
+<body>
+    <h1>Test Page</h1>
+    <p>If you can see this, the static files are being served correctly.</p>
+    <script>
+        // Test API calls
+        fetch('/api/workloads')
+            .then(response => response.json())
+            .then(data => {
+                console.log('API Test Success:', data);
+                document.body.innerHTML += '<p style="color: green;">✅ API is working!</p>';
+            })
+            .catch(error => {
+                console.error('API Test Failed:', error);
+                document.body.innerHTML += '<p style="color: red;">❌ API failed: ' + error.message + '</p>';
+            });
+    </script>
+</body>
+</html>
