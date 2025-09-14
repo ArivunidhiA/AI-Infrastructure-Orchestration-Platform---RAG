@@ -13,9 +13,12 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // Add any auth tokens here if needed
+    console.log('Making API request to:', config.baseURL + config.url);
+    console.log('Full config:', config);
     return config;
   },
   (error) => {
+    console.error('Request interceptor error:', error);
     return Promise.reject(error);
   }
 );

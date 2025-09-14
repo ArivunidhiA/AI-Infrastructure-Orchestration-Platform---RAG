@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import Dashboard from './components/Dashboard';
 import APITest from './components/APITest';
+import DetailedDebug from './components/DetailedDebug';
 import WorkloadManager from './components/WorkloadManager';
 import CostOptimizer from './components/CostOptimizer';
 import MonitoringPage from './components/MonitoringPage';
@@ -27,7 +28,7 @@ function App() {
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'dashboard':
-        return <Dashboard />;
+        return <DetailedDebug />;
       case 'workloads':
         return <WorkloadManager />;
       case 'optimization':
