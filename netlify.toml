@@ -10,8 +10,28 @@
   DISABLE_ESLINT_PLUGIN = "true"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api"
+  from = "/api/workloads"
+  to = "/.netlify/functions/workloads"
+  status = 200
+
+[[redirects]]
+  from = "/api/metrics"
+  to = "/.netlify/functions/metrics"
+  status = 200
+
+[[redirects]]
+  from = "/api/optimization"
+  to = "/.netlify/functions/optimization"
+  status = 200
+
+[[redirects]]
+  from = "/api/performance"
+  to = "/.netlify/functions/performance"
+  status = 200
+
+[[redirects]]
+  from = "/api/rag"
+  to = "/.netlify/functions/rag"
   status = 200
 
 [[redirects]]
