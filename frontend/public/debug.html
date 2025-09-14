@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Debug</title>
+    <style>
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+        }
+        .test { 
+            margin: 10px 0; 
+            padding: 10px; 
+            border: 1px solid #333; 
+            border-radius: 5px; 
+        }
+        .success { border-color: green; }
+        .error { border-color: red; }
+        button { 
+            background: #6366f1; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>API Debug Test</h1>
+    <div id="results"></div>
+    
+    <button onclick="testAPI('/api/workloads')">Test Workloads</button>
+    <button onclick="testAPI('/api/metrics')">Test Metrics</button>
+    <button onclick="testAPI('/api/optimization')">Test Optimization</button>
+    <button onclick="testAPI('/api/performance')">Test Performance</button>
+    
+    <script>
+        function testAPI(endpoint) {
+            const resultsDiv = document.getElementById('results');
+            const testDiv = document.createElement('div');
+            testDiv.className = 'test';
+            testDiv.innerHTML = `Testing ${endpoint}...`;
+            resultsDiv.appendChild(testDiv);
+            
+            fetch(endpoint)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                })
+                .then(data => {
+                    testDiv.className = 'test success';
+                    testDiv.innerHTML = `✅ ${endpoint}: SUCCESS<br>Data: ${JSON.stringify(data).substring(0, 100)}...`;
+                })
+                .catch(error => {
+                    testDiv.className = 'test error';
+                    testDiv.innerHTML = `❌ ${endpoint}: FAILED<br>Error: ${error.message}`;
+                });
+        }
+        
+        // Test all endpoints on load
+        window.onload = function() {
+            setTimeout(() => {
+                testAPI('/api/workloads');
+                testAPI('/api/metrics');
+                testAPI('/api/optimization');
+                testAPI('/api/performance');
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

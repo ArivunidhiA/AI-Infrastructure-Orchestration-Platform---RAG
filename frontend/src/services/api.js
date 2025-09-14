@@ -82,62 +82,62 @@ export const workloadAPI = {
 export const monitoringAPI = {
   // Get dashboard stats
   getDashboardStats: () => 
-    api.get('/api/monitoring/dashboard/stats'),
+    api.get('/api/metrics'),
   
   // Get workload metrics
   getWorkloadMetrics: (workloadId, hours = 24) => 
-    api.get(`/api/monitoring/metrics/${workloadId}?hours=${hours}`),
+    api.get('/api/metrics'),
   
   // Create metric
   createMetric: (metricData) => 
-    api.post('/api/monitoring/metrics', metricData),
+    api.post('/api/metrics', metricData),
   
   // Get resource usage summary
   getResourceUsageSummary: () => 
-    api.get('/api/monitoring/resource-usage'),
+    api.get('/api/metrics'),
   
   // Get performance trends
   getPerformanceTrends: (days = 7) => 
-    api.get(`/api/monitoring/performance-trends?days=${days}`),
+    api.get('/api/performance'),
   
   // Generate sample metrics
   generateSampleMetrics: (workloadId, count = 10) => 
-    api.post(`/api/monitoring/generate-sample-metrics/${workloadId}?count=${count}`),
+    api.post('/api/metrics', { workloadId, count }),
   
   // Get system alerts
   getSystemAlerts: () => 
-    api.get('/api/monitoring/alerts'),
+    api.get('/api/metrics'),
 };
 
 // Optimization API
 export const optimizationAPI = {
   // Get optimization recommendations
   getRecommendations: (statusFilter = null, limit = 50) => 
-    api.get(`/api/optimization/recommendations?status_filter=${statusFilter}&limit=${limit}`),
+    api.get('/api/optimization'),
   
   // Get workload optimizations
   getWorkloadOptimizations: (workloadId) => 
-    api.get(`/api/optimization/recommendations/${workloadId}`),
+    api.get('/api/optimization'),
   
   // Generate optimization recommendations
   generateRecommendations: () => 
-    api.post('/api/optimization/recommendations/generate'),
+    api.post('/api/optimization'),
   
   // Apply optimization
   applyOptimization: (recommendationId) => 
-    api.post(`/api/optimization/apply/${recommendationId}`),
+    api.post('/api/optimization'),
   
   // Reject optimization
   rejectOptimization: (recommendationId) => 
-    api.post(`/api/optimization/reject/${recommendationId}`),
+    api.post('/api/optimization'),
   
   // Get cost analysis
   getCostAnalysis: () => 
-    api.get('/api/optimization/cost-analysis'),
+    api.get('/api/optimization'),
   
   // Get efficiency analysis
   getEfficiencyAnalysis: () => 
-    api.get('/api/optimization/efficiency-analysis'),
+    api.get('/api/optimization'),
   
   // Get auto-scaling recommendations
   getAutoScalingRecommendations: () => 
@@ -156,21 +156,21 @@ export const optimizationAPI = {
 export const ragAPI = {
   // Query RAG system
   queryRAG: (question) => 
-    api.post('/api/rag/query', { question }),
+    api.post('/api/rag', { query: question }),
   
   // Get query history
   getQueryHistory: (limit = 20, skip = 0) => 
-    api.get(`/api/rag/history?limit=${limit}&skip=${skip}`),
+    api.get('/api/rag'),
   
   // Get suggested questions
   getSuggestedQuestions: () => 
-    api.get('/api/rag/suggested-questions'),
+    api.get('/api/rag'),
   
   // Upload document
   uploadDocument: (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    return api.post('/api/rag/docs/upload', formData, {
+    return api.post('/api/rag', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
