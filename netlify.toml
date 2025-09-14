@@ -9,11 +9,33 @@
   GENERATE_SOURCEMAP = "false"
   DISABLE_ESLINT_PLUGIN = "true"
 
+# API redirects (must come before catch-all)
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/workloads"
+  to = "/.netlify/functions/workloads"
   status = 200
 
+[[redirects]]
+  from = "/api/metrics"
+  to = "/.netlify/functions/metrics"
+  status = 200
+
+[[redirects]]
+  from = "/api/optimization"
+  to = "/.netlify/functions/optimization"
+  status = 200
+
+[[redirects]]
+  from = "/api/performance"
+  to = "/.netlify/functions/performance"
+  status = 200
+
+[[redirects]]
+  from = "/api/rag"
+  to = "/.netlify/functions/rag"
+  status = 200
+
+# Catch-all redirect (must come last)
 [[redirects]]
   from = "/*"
   to = "/index.html"
