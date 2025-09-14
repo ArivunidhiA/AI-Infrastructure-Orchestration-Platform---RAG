@@ -32,7 +32,7 @@ const Dashboard = () => {
         workloadAPI.getWorkloads(0, 10)
       ]);
       
-      // Handle different response structures
+      // Handle different response structures - APIs return data directly
       setDashboardStats(statsResponse.data || statsResponse);
       setWorkloads(Array.isArray(workloadsResponse.data) ? workloadsResponse.data : Array.isArray(workloadsResponse) ? workloadsResponse : []);
     } catch (err) {

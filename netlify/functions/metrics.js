@@ -14,17 +14,36 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const mockMetrics = [
-    { name: 'Image Classification', cpu: 65, memory: 72, gpu: 45 },
-    { name: 'NLP Model Inference', cpu: 58, memory: 68, gpu: 52 },
-    { name: 'Recommendation System', cpu: 72, memory: 75, gpu: 38 },
-    { name: 'Computer Vision', cpu: 68, memory: 70, gpu: 62 },
-    { name: 'Test Workload', cpu: 55, memory: 60, gpu: 30 }
-  ];
+  // Return dashboard stats for the main metrics endpoint
+  const dashboardStats = {
+    total_workloads: 3,
+    running_workloads: 3,
+    total_monthly_cost: 3240.00,
+    cost_savings: 450.00,
+    avg_cpu_usage: 65.0,
+    avg_memory_usage: 71.7,
+    recent_activity: [
+      {
+        action: "Started Image Classification Model",
+        status: "running",
+        timestamp: "2024-01-15T10:30:00Z"
+      },
+      {
+        action: "Optimized NLP Model resources",
+        status: "completed",
+        timestamp: "2024-01-14T14:20:00Z"
+      },
+      {
+        action: "Updated Recommendation System",
+        status: "running",
+        timestamp: "2024-01-13T09:15:00Z"
+      }
+    ]
+  };
 
   return {
     statusCode: 200,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    body: JSON.stringify(mockMetrics)
+    body: JSON.stringify(dashboardStats)
   };
 };

@@ -51,12 +51,12 @@ const RAGAssistant = () => {
         ragAPI.getDocuments()
       ]);
       
-      // Handle different response structures
+      // Handle different response structures - APIs return data directly
       const questionsData = questionsResponse.data || questionsResponse;
       const documentsData = documentsResponse.data || documentsResponse;
       
       setSuggestedQuestions(Array.isArray(questionsData.suggested_questions) ? questionsData.suggested_questions : []);
-      setDocuments(Array.isArray(documentsData) ? documentsData : []);
+      setDocuments(Array.isArray(documentsData.documents) ? documentsData.documents : Array.isArray(documentsData) ? documentsData : []);
     } catch (error) {
       console.error('Error fetching initial data:', error);
       // Set fallback data

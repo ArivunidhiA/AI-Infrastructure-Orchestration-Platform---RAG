@@ -39,10 +39,11 @@ const CostOptimizer = () => {
         optimizationAPI.getSavingsSummary()
       ]);
       
-      setRecommendations(recResponse.data);
-      setCostAnalysis(costResponse.data);
-      setEfficiencyAnalysis(efficiencyResponse.data);
-      setSavingsSummary(savingsResponse.data);
+      // Handle different response structures - APIs return data directly
+      setRecommendations(Array.isArray(recResponse.data) ? recResponse.data : Array.isArray(recResponse) ? recResponse : []);
+      setCostAnalysis(costResponse.data || costResponse);
+      setEfficiencyAnalysis(efficiencyResponse.data || efficiencyResponse);
+      setSavingsSummary(savingsResponse.data || savingsResponse);
     } catch (error) {
       toast.error('Failed to fetch optimization data');
       console.error('Error fetching optimization data:', error);
@@ -248,7 +249,7 @@ const CostOptimizer = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {recommendations.map((rec) => (
+                {Array.isArray(recommendations) ? recommendations.map((rec) => (
                   <div
                     key={rec.id}
                     className="p-4 bg-gray-800/30 rounded-lg border border-gray-700/50 hover:border-gray-600/50 transition-all duration-300"
@@ -303,7 +304,7 @@ const CostOptimizer = () => {
                       )}
                     </div>
                   </div>
-                ))}
+                )) : []}
               </div>
             )}
           </div>
@@ -317,7 +318,7 @@ const CostOptimizer = () => {
             
             {efficiencyAnalysis?.workloads && efficiencyAnalysis.workloads.length > 0 ? (
               <div className="space-y-4">
-                {efficiencyAnalysis.workloads.map((workload) => (
+                {Array.isArray(efficiencyAnalysis.workloads) ? efficiencyAnalysis.workloads.map((workload) => (
                   <div
                     key={workload.workload_id}
                     className="p-4 bg-gray-800/30 rounded-lg border border-gray-700/50"
@@ -361,7 +362,7 @@ const CostOptimizer = () => {
                       </div>
                     </div>
                   </div>
-                ))}
+                )) : []}
               </div>
             ) : (
               <div className="text-center py-8">
@@ -380,7 +381,7 @@ const CostOptimizer = () => {
             
             {costAnalysis?.optimization_opportunities && costAnalysis.optimization_opportunities.length > 0 ? (
               <div className="space-y-4">
-                {costAnalysis.optimization_opportunities.map((opp, index) => (
+                {Array.isArray(costAnalysis.optimization_opportunities) ? costAnalysis.optimization_opportunities.map((opp, index) => (
                   <div
                     key={index}
                     className="p-4 bg-gray-800/30 rounded-lg border border-gray-700/50"
@@ -415,7 +416,7 @@ const CostOptimizer = () => {
                       <p className="text-white text-sm mt-1">{opp.recommendation}</p>
                     </div>
                   </div>
-                ))}
+                )) : []}
               </div>
             ) : (
               <div className="text-center py-8">

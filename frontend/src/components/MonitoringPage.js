@@ -32,8 +32,12 @@ const MonitoringPage = () => {
         monitoringAPI.getResourceUsageSummary()
       ]);
       
-      setPerformanceData(performanceResponse.data.trends || []);
-      setResourceData(formatResourceData(resourceResponse.data));
+      // Handle different response structures - APIs return data directly
+      const perfData = performanceResponse.data || performanceResponse;
+      const resourceData = resourceResponse.data || resourceResponse;
+      
+      setPerformanceData(Array.isArray(perfData.trends) ? perfData.trends : Array.isArray(perfData) ? perfData : []);
+      setResourceData(formatResourceData(resourceData));
     } catch (error) {
       console.error('Error fetching monitoring data:', error);
     } finally {
@@ -42,14 +46,17 @@ const MonitoringPage = () => {
   };
 
   const formatResourceData = (data) => {
-    if (!data.workloads) return [];
+    if (!data || (!data.workloads && !Array.isArray(data))) return [];
     
-    return data.workloads.map(workload => ({
-      name: workload.name.length > 15 ? workload.name.substring(0, 15) + '...' : workload.name,
-      cpu: workload.cpu_usage,
-      memory: workload.memory_usage,
-      gpu: workload.gpu_usage || 0,
-      fullName: workload.name
+    const workloads = data.workloads || data;
+    if (!Array.isArray(workloads)) return [];
+    
+    return workloads.map(workload => ({
+      name: workload.name && workload.name.length > 15 ? workload.name.substring(0, 15) + '...' : workload.name || 'Unknown',
+      cpu: workload.cpu_usage || workload.cpu || 0,
+      memory: workload.memory_usage || workload.memory || 0,
+      gpu: workload.gpu_usage || workload.gpu || 0,
+      fullName: workload.name || 'Unknown'
     }));
   };
 
@@ -249,7 +256,7 @@ const MonitoringPage = () => {
             <div>
               <p className="text-sm font-medium text-gray-400 mb-2">Peak CPU Usage</p>
               <p className="text-2xl font-bold text-white">
-                {Math.max(...performanceData.map(d => d.avg_cpu_usage || 0))}%
+                {Array.isArray(performanceData) && performanceData.length > 0 ? Math.max(...performanceData.map(d => d.avg_cpu_usage || 0)) : 0}%
               </p>
             </div>
             <div className="p-3 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/30">
@@ -263,7 +270,7 @@ const MonitoringPage = () => {
             <div>
               <p className="text-sm font-medium text-gray-400 mb-2">Peak Memory Usage</p>
               <p className="text-2xl font-bold text-white">
-                {Math.max(...performanceData.map(d => d.avg_memory_usage || 0))}%
+                {Array.isArray(performanceData) && performanceData.length > 0 ? Math.max(...performanceData.map(d => d.avg_memory_usage || 0)) : 0}%
               </p>
             </div>
             <div className="p-3 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl border border-purple-500/30">
