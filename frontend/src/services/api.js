@@ -136,11 +136,11 @@ export const optimizationAPI = {
   
   // Get cost analysis
   getCostAnalysis: () => 
-    api.get('/optimization'),
+    api.get('/cost-analysis'),
   
   // Get efficiency analysis
   getEfficiencyAnalysis: () => 
-    api.get('/optimization'),
+    api.get('/efficiency-analysis'),
   
   // Get auto-scaling recommendations
   getAutoScalingRecommendations: () => 
@@ -148,7 +148,7 @@ export const optimizationAPI = {
   
   // Get savings summary
   getSavingsSummary: () => 
-    api.get('/optimization'),
+    api.get('/savings-summary'),
   
   // Delete optimization
   deleteOptimization: (recommendationId) => 

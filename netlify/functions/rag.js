@@ -21,12 +21,27 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        response: `RAG Response: Based on your query "${body.query || 'default query'}", here are the relevant insights and recommendations for your AI infrastructure.`,
+        id: Date.now(),
+        answer: `Based on your query "${body.query || 'default query'}", here are the relevant insights and recommendations for your AI infrastructure. This response provides actionable guidance to help optimize your system performance and reduce costs.`,
         sources: [
-          "Infrastructure Optimization Guide",
-          "Cost Management Best Practices",
-          "Performance Tuning Documentation"
-        ]
+          {
+            title: "Infrastructure Optimization Guide",
+            doc_type: "guide",
+            relevance_score: 0.95
+          },
+          {
+            title: "Cost Management Best Practices", 
+            doc_type: "guide",
+            relevance_score: 0.88
+          },
+          {
+            title: "Performance Tuning Documentation",
+            doc_type: "guide", 
+            relevance_score: 0.82
+          }
+        ],
+        confidence_score: 0.92,
+        created_at: new Date().toISOString()
       })
     };
   }

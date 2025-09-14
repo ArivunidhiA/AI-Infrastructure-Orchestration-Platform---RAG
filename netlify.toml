@@ -35,6 +35,21 @@
   to = "/.netlify/functions/rag"
   status = 200
 
+[[redirects]]
+  from = "/api/cost-analysis"
+  to = "/.netlify/functions/cost-analysis"
+  status = 200
+
+[[redirects]]
+  from = "/api/efficiency-analysis"
+  to = "/.netlify/functions/efficiency-analysis"
+  status = 200
+
+[[redirects]]
+  from = "/api/savings-summary"
+  to = "/.netlify/functions/savings-summary"
+  status = 200
+
 # Catch-all redirect (must come last)
 [[redirects]]
   from = "/*"
