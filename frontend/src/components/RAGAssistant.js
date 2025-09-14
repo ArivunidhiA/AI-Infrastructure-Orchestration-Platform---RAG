@@ -51,10 +51,23 @@ const RAGAssistant = () => {
         ragAPI.getDocuments()
       ]);
       
-      setSuggestedQuestions(questionsResponse.data.suggested_questions || []);
-      setDocuments(documentsResponse.data || []);
+      // Handle different response structures
+      const questionsData = questionsResponse.data || questionsResponse;
+      const documentsData = documentsResponse.data || documentsResponse;
+      
+      setSuggestedQuestions(Array.isArray(questionsData.suggested_questions) ? questionsData.suggested_questions : []);
+      setDocuments(Array.isArray(documentsData) ? documentsData : []);
     } catch (error) {
       console.error('Error fetching initial data:', error);
+      // Set fallback data
+      setSuggestedQuestions([
+        "How can I optimize my GPU usage?",
+        "What are the best practices for cost management?",
+        "How do I troubleshoot high memory usage?",
+        "What is auto-scaling and how does it work?",
+        "How can I improve my model performance?"
+      ]);
+      setDocuments([]);
     }
   };
 
@@ -238,7 +251,7 @@ const RAGAssistant = () => {
                     {/* Suggested Questions */}
                     <div className="space-y-2">
                       <p className="text-sm text-gray-500">Try asking:</p>
-                      {suggestedQuestions.slice(0, 3).map((question, index) => (
+                      {Array.isArray(suggestedQuestions) ? suggestedQuestions.slice(0, 3).map((question, index) => (
                         <button
                           key={index}
                           onClick={() => handleSuggestedQuestion(question)}
@@ -246,7 +259,7 @@ const RAGAssistant = () => {
                         >
                           {question}
                         </button>
-                      ))}
+                      )) : []}
                     </div>
                   </div>
                 ) : (
@@ -360,7 +373,7 @@ const RAGAssistant = () => {
                 Suggested Questions
               </h3>
               <div className="space-y-2">
-                {suggestedQuestions.slice(0, 5).map((question, index) => (
+                {Array.isArray(suggestedQuestions) ? suggestedQuestions.slice(0, 5).map((question, index) => (
                   <button
                     key={index}
                     onClick={() => handleSuggestedQuestion(question)}
@@ -368,7 +381,7 @@ const RAGAssistant = () => {
                   >
                     {question}
                   </button>
-                ))}
+                )) : []}
               </div>
             </div>
 
@@ -408,7 +421,7 @@ const RAGAssistant = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {documents.map((doc) => (
+            {Array.isArray(documents) ? documents.map((doc) => (
               <div
                 key={doc.id}
                 className="glass-dark p-4 rounded-xl border border-gray-700/50 hover:border-gray-600/50 transition-all duration-300"
@@ -436,7 +449,13 @@ const RAGAssistant = () => {
                   <span>{doc.content.length} chars</span>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="col-span-full text-center py-12">
+                <FileText className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-400">No documents found</p>
+                <p className="text-sm text-gray-500 mt-1">Upload your first document to get started</p>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -32,8 +32,9 @@ const Dashboard = () => {
         workloadAPI.getWorkloads(0, 10)
       ]);
       
-      setDashboardStats(statsResponse.data);
-      setWorkloads(workloadsResponse.data);
+      // Handle different response structures
+      setDashboardStats(statsResponse.data || statsResponse);
+      setWorkloads(Array.isArray(workloadsResponse.data) ? workloadsResponse.data : Array.isArray(workloadsResponse) ? workloadsResponse : []);
     } catch (err) {
       setError(apiUtils.handleError(err));
     } finally {
@@ -349,12 +350,12 @@ const Dashboard = () => {
         <motion.div variants={itemVariants}>
           <AdvancedCharts 
             type="resource-usage"
-            data={workloads.slice(0, 5).map((workload, index) => ({
-              name: workload.name.length > 15 ? workload.name.substring(0, 15) + '...' : workload.name,
+            data={Array.isArray(workloads) ? workloads.slice(0, 5).map((workload, index) => ({
+              name: workload.name && workload.name.length > 15 ? workload.name.substring(0, 15) + '...' : workload.name || `Workload ${index + 1}`,
               cpu: Math.floor(Math.random() * 40) + 30, // 30-70% CPU usage
               memory: Math.floor(Math.random() * 30) + 40, // 40-70% Memory usage
               gpu: workload.gpu_count > 0 ? Math.floor(Math.random() * 50) + 20 : 0 // 20-70% GPU usage if GPU available
-            }))}
+            })) : []}
             title="Resource Usage"
             subtitle="Current workload resource consumption"
           />
@@ -389,7 +390,7 @@ const Dashboard = () => {
         </div>
         
         <div className="space-y-4">
-          {workloads.length === 0 ? (
+          {!Array.isArray(workloads) || workloads.length === 0 ? (
             <div className="text-center py-8">
               <Server className="w-12 h-12 text-gray-600 mx-auto mb-4" />
               <p className="text-gray-400">No workloads found</p>
