@@ -27,6 +27,14 @@ api.interceptors.response.use(
   },
   (error) => {
     console.error('API Error:', error);
+    // Show user-friendly error message
+    if (error.response) {
+      console.error('Response error:', error.response.status, error.response.data);
+    } else if (error.request) {
+      console.error('Request error:', error.request);
+    } else {
+      console.error('Error:', error.message);
+    }
     return Promise.reject(error);
   }
 );
