@@ -31,6 +31,22 @@ exports.handler = async (event, context) => {
     };
   }
 
+  if (event.httpMethod === 'GET') {
+    return {
+      statusCode: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: "RAG API is working",
+        availableMethods: ["POST for queries", "GET for status"],
+        sampleQuery: {
+          method: "POST",
+          url: "/api/rag",
+          body: { query: "your question here" }
+        }
+      })
+    };
+  }
+
   return {
     statusCode: 405,
     headers: corsHeaders,
