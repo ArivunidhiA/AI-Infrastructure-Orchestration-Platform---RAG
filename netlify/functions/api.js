@@ -1,5 +1,4 @@
 // Netlify Functions for AI Infrastructure Platform
-const { Handler } = require('@netlify/functions');
 
 // Mock data for demonstration
 const mockWorkloads = [

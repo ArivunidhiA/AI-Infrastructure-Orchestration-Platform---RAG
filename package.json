@@ -5,7 +5,8 @@
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
     "dev": "cd frontend && npm start",
-    "netlify:dev": "netlify dev"
+    "netlify:dev": "netlify dev",
+    "install": "cd frontend && npm install"
   },
   "keywords": ["ai", "infrastructure", "rag", "netlify", "react"],
   "author": "Arivunidhi A",
