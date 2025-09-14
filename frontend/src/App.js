@@ -28,7 +28,7 @@ function App() {
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'dashboard':
-        return <DetailedDebug />;
+        return <Dashboard />;
       case 'workloads':
         return <WorkloadManager />;
       case 'optimization':
