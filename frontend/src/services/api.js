@@ -43,7 +43,7 @@ api.interceptors.response.use(
 export const workloadAPI = {
   // Get all workloads
   getWorkloads: (skip = 0, limit = 100) => 
-    api.get(`/api/workloads/?skip=${skip}&limit=${limit}`),
+    api.get('/api/workloads'),
   
   // Get specific workload
   getWorkload: (id) => 
@@ -183,23 +183,23 @@ export const ragAPI = {
   
   // Get documents
   getDocuments: (docType = null, limit = 50, skip = 0) => 
-    api.get(`/api/rag/docs?doc_type=${docType}&limit=${limit}&skip=${skip}`),
+    api.get('/api/rag'),
   
   // Get specific document
   getDocument: (documentId) => 
-    api.get(`/api/rag/docs/${documentId}`),
+    api.get('/api/rag'),
   
   // Delete document
   deleteDocument: (documentId) => 
-    api.delete(`/api/rag/docs/${documentId}`),
+    api.delete('/api/rag'),
   
   // Search documents
   searchDocuments: (query, limit = 10) => 
-    api.get(`/api/rag/search?query=${encodeURIComponent(query)}&limit=${limit}`),
+    api.get('/api/rag'),
   
   // Get RAG stats
   getRAGStats: () => 
-    api.get('/api/rag/stats'),
+    api.get('/api/rag'),
   
   // Get specific query
   getQuery: (queryId) => 
