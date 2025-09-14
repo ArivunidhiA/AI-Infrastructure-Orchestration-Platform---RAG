@@ -1,0 +1,13 @@
+{
+  "name": "ai-infrastructure-platform",
+  "version": "1.0.0",
+  "description": "AI Infrastructure Orchestration Platform with RAG",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "dev": "cd frontend && npm start",
+    "start": "cd backend && python main.py"
+  },
+  "keywords": ["ai", "infrastructure", "rag", "fastapi", "react"],
+  "author": "Arivunidhi A",
+  "license": "MIT"
+}
