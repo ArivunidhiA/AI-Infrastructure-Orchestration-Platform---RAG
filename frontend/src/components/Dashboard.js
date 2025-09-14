@@ -33,6 +33,7 @@ const Dashboard = () => {
       ]);
       
       // Handle different response structures - APIs return data directly
+      console.log('Dashboard API responses:', { statsResponse, workloadsResponse });
       setDashboardStats(statsResponse.data || statsResponse);
       setWorkloads(Array.isArray(workloadsResponse.data) ? workloadsResponse.data : Array.isArray(workloadsResponse) ? workloadsResponse : []);
     } catch (err) {

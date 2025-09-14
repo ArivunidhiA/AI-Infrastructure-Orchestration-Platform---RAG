@@ -52,6 +52,7 @@ const RAGAssistant = () => {
       ]);
       
       // Handle different response structures - APIs return data directly
+      console.log('RAG API responses:', { questionsResponse, documentsResponse });
       const questionsData = questionsResponse.data || questionsResponse;
       const documentsData = documentsResponse.data || documentsResponse;
       
