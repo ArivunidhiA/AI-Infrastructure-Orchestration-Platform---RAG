@@ -46,134 +46,134 @@ api.interceptors.response.use(
 export const workloadAPI = {
   // Get all workloads
   getWorkloads: (skip = 0, limit = 100) => 
-    api.get('/api/workloads'),
+    api.get('/workloads'),
   
   // Get specific workload
   getWorkload: (id) => 
-    api.get('/api/workloads'),
+    api.get('/workloads'),
   
   // Create workload
   createWorkload: (workloadData) => 
-    api.post('/api/workloads/', workloadData),
+    api.post('/workloads/', workloadData),
   
   // Update workload
   updateWorkload: (id, workloadData) => 
-    api.put(`/api/workloads/${id}`, workloadData),
+    api.put(`/workloads/${id}`, workloadData),
   
   // Delete workload
   deleteWorkload: (id) => 
-    api.delete(`/api/workloads/${id}`),
+    api.delete(`/workloads/${id}`),
   
   // Start workload
   startWorkload: (id) => 
-    api.post(`/api/workloads/${id}/start`),
+    api.post(`/workloads/${id}/start`),
   
   // Stop workload
   stopWorkload: (id) => 
-    api.post(`/api/workloads/${id}/stop`),
+    api.post(`/workloads/${id}/stop`),
   
   // Get workload optimization
   getWorkloadOptimization: (id) => 
-    api.get('/api/optimization'),
+    api.get('/optimization'),
   
   // Get workload cost analysis
   getWorkloadCostAnalysis: (id) => 
-    api.get('/api/optimization'),
+    api.get('/optimization'),
 };
 
 // Monitoring API
 export const monitoringAPI = {
   // Get dashboard stats
   getDashboardStats: () => 
-    api.get('/api/metrics'),
+    api.get('/metrics'),
   
   // Get workload metrics
   getWorkloadMetrics: (workloadId, hours = 24) => 
-    api.get('/api/metrics'),
+    api.get('/metrics'),
   
   // Create metric
   createMetric: (metricData) => 
-    api.post('/api/metrics', metricData),
+    api.post('/metrics', metricData),
   
   // Get resource usage summary
   getResourceUsageSummary: () => 
-    api.get('/api/metrics'),
+    api.get('/metrics'),
   
   // Get performance trends
   getPerformanceTrends: (days = 7) => 
-    api.get('/api/performance'),
+    api.get('/performance'),
   
   // Generate sample metrics
   generateSampleMetrics: (workloadId, count = 10) => 
-    api.post('/api/metrics', { workloadId, count }),
+    api.post('/metrics', { workloadId, count }),
   
   // Get system alerts
   getSystemAlerts: () => 
-    api.get('/api/metrics'),
+    api.get('/metrics'),
 };
 
 // Optimization API
 export const optimizationAPI = {
   // Get optimization recommendations
   getRecommendations: (statusFilter = null, limit = 50) => 
-    api.get('/api/optimization'),
+    api.get('/optimization'),
   
   // Get workload optimizations
   getWorkloadOptimizations: (workloadId) => 
-    api.get('/api/optimization'),
+    api.get('/optimization'),
   
   // Generate optimization recommendations
   generateRecommendations: () => 
-    api.post('/api/optimization'),
+    api.post('/optimization'),
   
   // Apply optimization
   applyOptimization: (recommendationId) => 
-    api.post('/api/optimization'),
+    api.post('/optimization'),
   
   // Reject optimization
   rejectOptimization: (recommendationId) => 
-    api.post('/api/optimization'),
+    api.post('/optimization'),
   
   // Get cost analysis
   getCostAnalysis: () => 
-    api.get('/api/optimization'),
+    api.get('/optimization'),
   
   // Get efficiency analysis
   getEfficiencyAnalysis: () => 
-    api.get('/api/optimization'),
+    api.get('/optimization'),
   
   // Get auto-scaling recommendations
   getAutoScalingRecommendations: () => 
-    api.get('/api/optimization'),
+    api.get('/optimization'),
   
   // Get savings summary
   getSavingsSummary: () => 
-    api.get('/api/optimization'),
+    api.get('/optimization'),
   
   // Delete optimization
   deleteOptimization: (recommendationId) => 
-    api.delete('/api/optimization'),
+    api.delete('/optimization'),
 };
 
 // RAG API
 export const ragAPI = {
   // Query RAG system
   queryRAG: (question) => 
-    api.post('/api/rag', { query: question }),
+    api.post('/rag', { query: question }),
   
   // Get query history
   getQueryHistory: (limit = 20, skip = 0) => 
-    api.get('/api/rag'),
+    api.get('/rag'),
   
   // Get suggested questions
   getSuggestedQuestions: () => 
-    api.get('/api/rag'),
+    api.get('/rag'),
   
   // Upload document
   uploadDocument: (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    return api.post('/api/rag', formData, {
+    return api.post('/rag', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -182,31 +182,31 @@ export const ragAPI = {
   
   // Create document
   createDocument: (title, content, docType = 'guide') => 
-    api.post('/api/rag/docs', { title, content, doc_type: docType }),
+    api.post('/rag/docs', { title, content, doc_type: docType }),
   
   // Get documents
   getDocuments: (docType = null, limit = 50, skip = 0) => 
-    api.get('/api/rag'),
+    api.get('/rag'),
   
   // Get specific document
   getDocument: (documentId) => 
-    api.get('/api/rag'),
+    api.get('/rag'),
   
   // Delete document
   deleteDocument: (documentId) => 
-    api.delete('/api/rag'),
+    api.delete('/rag'),
   
   // Search documents
   searchDocuments: (query, limit = 10) => 
-    api.get('/api/rag'),
+    api.get('/rag'),
   
   // Get RAG stats
   getRAGStats: () => 
-    api.get('/api/rag'),
+    api.get('/rag'),
   
   // Get specific query
   getQuery: (queryId) => 
-    api.get('/api/rag'),
+    api.get('/rag'),
 };
 
 // Utility functions
