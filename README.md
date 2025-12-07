@@ -12,12 +12,41 @@
 
 ## 📸 Screenshots
 
-![Dashboard Overview](RAG1.png)
-![Workload Manager](RAG2.png)
-![Cost Optimizer](RAG3.png)
-![Monitoring Dashboard](RAG4.png)
-![AI Knowledge Assistant](RAG5.png)
-![System Architecture](RAG6.png)
+<table>
+  <tr>
+    <td align="center">
+      <img src="RAG1.png" alt="Dashboard Overview" width="300"/>
+      <br><strong>Dashboard Overview</strong>
+    </td>
+    <td align="center">
+      <img src="RAG2.png" alt="Workload Manager" width="300"/>
+      <br><strong>Workload Manager</strong>
+    </td>
+    <td align="center">
+      <img src="RAG3.png" alt="Cost Optimizer" width="300"/>
+      <br><strong>Cost Optimizer</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="RAG4.png" alt="Monitoring Dashboard" width="300"/>
+      <br><strong>Monitoring Dashboard</strong>
+    </td>
+    <td align="center">
+      <img src="RAG5.png" alt="AI Knowledge Assistant" width="300"/>
+      <br><strong>AI Knowledge Assistant</strong>
+    </td>
+    <td align="center">
+      <img src="RAG6.png" alt="System Architecture" width="300"/>
+      <br><strong>System Architecture</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center"></td>
+    <td align="center"></td>
+    <td align="center"></td>
+  </tr>
+</table>
 
 ## ✨ Features
 
