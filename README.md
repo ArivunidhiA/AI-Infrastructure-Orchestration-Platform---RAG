@@ -6,6 +6,16 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/ai-infrastructure-with-rag/deploy-status)](https://app.netlify.com/sites/ai-infrastructure-with-rag)
 
+## 🛠️ Tech Stack
+
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)
+![Recharts](https://img.shields.io/badge/Recharts-FF6B6B?style=for-the-badge&logo=chartdotjs&logoColor=white)
+
 ## 🌐 Live Demo
 
 **[👉 Try it live](https://ai-infrastructure-with-rag.netlify.app/)**
@@ -68,13 +78,19 @@
 - **Responsive Layout** - Works perfectly on desktop, tablet, and mobile devices
 - **Smooth Animations** - Framer Motion powered transitions and micro-interactions
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack Details
 
 **Frontend:**
-- React 18 | Tailwind CSS | Framer Motion | Recharts | Axios
+- React 18 - Modern React with hooks and functional components
+- Tailwind CSS - Utility-first CSS framework
+- Framer Motion - Production-ready motion library
+- Recharts - Composable charting library
+- Axios - Promise-based HTTP client
 
 **Backend:**
-- Node.js | Netlify Functions | Serverless Architecture
+- Node.js - JavaScript runtime
+- Netlify Functions - Serverless backend functions
+- Serverless Architecture - Scalable cloud infrastructure
 
 ## 🚀 Quick Start
 
