@@ -6,7 +6,6 @@
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Available-brightgreen)](https://ai-infrastructure-with-rag.netlify.app/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/ai-infrastructure-with-rag/deploy-status)](https://app.netlify.com/sites/ai-infrastructure-with-rag)
 
 ## 🛠️ Tech Stack
 
