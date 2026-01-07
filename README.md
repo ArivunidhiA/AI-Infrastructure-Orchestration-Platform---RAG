@@ -29,28 +29,17 @@
 <table>
   <tr>
     <td align="center">
-      <img src="AI1.png" alt="Dashboard Overview" width="300"/>
+      <img src="AI1.png" alt="Dashboard Overview" width="400"/>
       <br><strong>Dashboard Overview</strong>
     </td>
     <td align="center">
-      <img src="AI2.png" alt="Workload Manager" width="300"/>
+      <img src="AI2.png" alt="Workload Manager" width="400"/>
       <br><strong>Workload Manager</strong>
     </td>
     <td align="center">
-      <img src="AI3.png" alt="AI Knowledge Assistant" width="300"/>
+      <img src="AI3.png" alt="AI Knowledge Assistant" width="400"/>
       <br><strong>AI Knowledge Assistant</strong>
     </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="AI4.png" alt="Landing Page" width="300"/>
-      <br><strong>Landing Page</strong>
-    </td>
-    <td align="center">
-      <img src="AI5.png" alt="Platform Overview" width="300"/>
-      <br><strong>Platform Overview</strong>
-    </td>
-    <td align="center"></td>
   </tr>
 </table>
 
