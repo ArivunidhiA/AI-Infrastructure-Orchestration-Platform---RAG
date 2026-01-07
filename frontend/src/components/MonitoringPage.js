@@ -12,6 +12,7 @@ import {
 import { monitoringAPI } from '../services/api';
 import { apiUtils } from '../services/api';
 import AdvancedCharts from './AdvancedCharts';
+import { GlowCard } from './ui/spotlight-card';
 
 const MonitoringPage = () => {
   const [performanceData, setPerformanceData] = useState([]);
@@ -60,6 +61,33 @@ const MonitoringPage = () => {
     }));
   };
 
+  const generatePerformanceData = (days) => {
+    const data = [];
+    const today = new Date();
+    
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      
+      // Generate varying data based on day index
+      const baseCpu = 65 + (i % 7) * 3;
+      const baseMemory = 70 + (i % 5) * 2;
+      const baseGpu = 45 + (i % 6) * 3;
+      const baseCost = 1200 + (i % 4) * 50;
+      
+      data.push({
+        date: dateStr,
+        total_cost: baseCost + Math.random() * 100,
+        cpu_usage: Math.min(95, Math.max(40, baseCpu + Math.random() * 10)),
+        memory_usage: Math.min(90, Math.max(50, baseMemory + Math.random() * 8)),
+        gpu_usage: Math.min(80, Math.max(25, baseGpu + Math.random() * 10))
+      });
+    }
+    
+    return data;
+  };
+
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -104,8 +132,10 @@ const MonitoringPage = () => {
       {/* Page Header */}
       <div className="flex items-center justify-between relative">
         <div>
-          <h1 className="text-4xl font-bold gradient-text-glow">Monitoring</h1>
-          <p className="text-gray-400 mt-2 text-lg">Real-time performance and resource analytics</p>
+          <h1 className="text-5xl md:text-6xl md:leading-16 tracking-tight font-light text-white mb-2">
+            <span className="font-medium italic instrument">Monitoring</span>
+          </h1>
+          <p className="text-xs font-light text-white/70 leading-relaxed">Real-time performance and resource analytics</p>
         </div>
         <div className="flex items-center space-x-3">
           <button
@@ -168,12 +198,12 @@ const MonitoringPage = () => {
       {/* Main Chart */}
       <div className="chart-container">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold gradient-text">
+          <h3 className="text-xl font-light text-white">
             {chartTypes.find(c => c.id === activeChart)?.label}
           </h3>
           <div className="flex items-center space-x-2">
-            <Activity className="w-4 h-4 text-blue-400 neon-glow" />
-            <span className="text-sm text-gray-300 font-medium">Interactive</span>
+            <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse" />
+            <span className="text-sm text-white/70 font-medium">Live</span>
           </div>
         </div>
 
@@ -187,20 +217,9 @@ const MonitoringPage = () => {
           {activeChart === 'performance' && (
             <AdvancedCharts 
               type="cost-trends"
-              data={performanceData.length > 0 ? performanceData : [
-                { date: '2024-01-01', total_cost: 1200, cpu_usage: 75, memory_usage: 68, gpu_usage: 45 },
-                { date: '2024-01-02', total_cost: 1350, cpu_usage: 82, memory_usage: 71, gpu_usage: 52 },
-                { date: '2024-01-03', total_cost: 1100, cpu_usage: 68, memory_usage: 65, gpu_usage: 38 },
-                { date: '2024-01-04', total_cost: 1400, cpu_usage: 85, memory_usage: 74, gpu_usage: 58 },
-                { date: '2024-01-05', total_cost: 1250, cpu_usage: 78, memory_usage: 69, gpu_usage: 48 },
-                { date: '2024-01-06', total_cost: 1300, cpu_usage: 80, memory_usage: 72, gpu_usage: 50 },
-                { date: '2024-01-07', total_cost: 1450, cpu_usage: 88, memory_usage: 76, gpu_usage: 62 },
-                { date: '2024-01-08', total_cost: 1150, cpu_usage: 72, memory_usage: 66, gpu_usage: 42 },
-                { date: '2024-01-09', total_cost: 1380, cpu_usage: 84, memory_usage: 73, gpu_usage: 55 },
-                { date: '2024-01-10', total_cost: 1320, cpu_usage: 79, memory_usage: 70, gpu_usage: 49 }
-              ]}
+              data={performanceData.length > 0 ? performanceData : generatePerformanceData(timeRange)}
               title="Performance Trends"
-              subtitle="System performance over time"
+              subtitle={`System performance over ${timeRange} ${timeRange === 1 ? 'day' : 'days'}`}
             />
           )}
 
@@ -256,7 +275,7 @@ const MonitoringPage = () => {
             <div>
               <p className="text-sm font-medium text-gray-400 mb-2">Peak CPU Usage</p>
               <p className="text-2xl font-bold text-white">
-                {Array.isArray(performanceData) && performanceData.length > 0 ? Math.max(...performanceData.map(d => d.avg_cpu_usage || 0)) : 0}%
+                {Array.isArray(performanceData) && performanceData.length > 0 ? Math.max(...performanceData.map(d => d.cpu_usage || d.avg_cpu_usage || 0)) : 0}%
               </p>
             </div>
             <div className="p-3 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/30">
@@ -270,11 +289,11 @@ const MonitoringPage = () => {
             <div>
               <p className="text-sm font-medium text-gray-400 mb-2">Peak Memory Usage</p>
               <p className="text-2xl font-bold text-white">
-                {Array.isArray(performanceData) && performanceData.length > 0 ? Math.max(...performanceData.map(d => d.avg_memory_usage || 0)) : 0}%
+                {Array.isArray(performanceData) && performanceData.length > 0 ? Math.max(...performanceData.map(d => d.memory_usage || d.avg_memory_usage || 0)) : 0}%
               </p>
             </div>
-            <div className="p-3 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl border border-purple-500/30">
-              <Activity className="w-5 h-5 text-purple-400" />
+            <div className="p-3 bg-white/10 rounded-xl border border-white/20">
+              <Activity className="w-5 h-5 text-white" />
             </div>
           </div>
         </div>
@@ -287,8 +306,8 @@ const MonitoringPage = () => {
                 {performanceData.length}
               </p>
             </div>
-            <div className="p-3 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl border border-cyan-500/30">
-              <TrendingUp className="w-5 h-5 text-cyan-400" />
+            <div className="p-3 bg-white/10 rounded-xl border border-white/20">
+              <TrendingUp className="w-5 h-5 text-white" />
             </div>
           </div>
         </div>

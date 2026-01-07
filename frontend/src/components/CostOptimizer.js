@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { 
   TrendingUp, 
   DollarSign, 
@@ -16,6 +17,8 @@ import {
 import { optimizationAPI } from '../services/api';
 import { apiUtils } from '../services/api';
 import toast from 'react-hot-toast';
+import { Button } from './ui/neon-button';
+import { GlowCard } from './ui/spotlight-card';
 
 const CostOptimizer = () => {
   const [recommendations, setRecommendations] = useState([]);
@@ -88,13 +91,13 @@ const CostOptimizer = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'applied':
-        return <CheckCircle className="w-4 h-4 text-green-400" />;
+        return <CheckCircle className="w-4 h-4 text-white" />;
       case 'pending':
-        return <Clock className="w-4 h-4 text-yellow-400" />;
+        return <Clock className="w-4 h-4 text-white" />;
       case 'rejected':
-        return <X className="w-4 h-4 text-red-400" />;
+        return <X className="w-4 h-4 text-white" />;
       default:
-        return <Clock className="w-4 h-4 text-gray-400" />;
+        return <Clock className="w-4 h-4 text-white/70" />;
     }
   };
 
@@ -125,75 +128,108 @@ const CostOptimizer = () => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold gradient-text">Cost Optimizer</h1>
-          <p className="text-gray-400 mt-1">Optimize your infrastructure costs and performance</p>
+          <h1 className="text-5xl md:text-6xl md:leading-16 tracking-tight font-light text-white mb-2">
+            <span className="font-medium italic instrument">Cost Optimizer</span>
+          </h1>
+          <p className="text-xs font-light text-white/70 leading-relaxed">Optimize your infrastructure costs and performance</p>
         </div>
-        <button
-          onClick={handleGenerateRecommendations}
-          className="btn-primary flex items-center space-x-2"
-        >
-          <Lightbulb className="w-5 h-5" />
-          <span>Generate Recommendations</span>
-        </button>
+        <div className="ml-auto">
+          <Button
+            onClick={handleGenerateRecommendations}
+            variant="default"
+            className="flex items-center space-x-2"
+          >
+            <Lightbulb className="w-5 h-5 text-white" />
+            <span>Generate Recommendations</span>
+          </Button>
+        </div>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="metric-card card-hover">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-400">Total Monthly Cost</p>
-              <p className="text-2xl font-bold text-white">
-                {apiUtils.formatCurrency(costAnalysis?.total_monthly_cost || 0)}
-              </p>
+        <motion.div
+          whileHover={{ 
+            y: -8,
+            transition: { duration: 0.3, ease: "easeOut" }
+          }}
+        >
+          <GlowCard glowColor="white" customSize className="w-full h-auto p-6 hover:bg-white/10 transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-400">Total Monthly Cost</p>
+                <p className="text-2xl font-bold text-white">
+                  {apiUtils.formatCurrency(costAnalysis?.total_monthly_cost || 0)}
+                </p>
+              </div>
+              <div className="p-3 bg-white/10 rounded-lg">
+                <DollarSign className="w-6 h-6 text-white" />
+              </div>
             </div>
-            <div className="p-3 bg-blue-500/20 rounded-lg">
-              <DollarSign className="w-6 h-6 text-blue-400" />
-            </div>
-          </div>
-        </div>
+          </GlowCard>
+        </motion.div>
 
-        <div className="metric-card card-hover">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-400">Potential Savings</p>
-              <p className="text-2xl font-bold text-green-400">
-                {apiUtils.formatCurrency(costAnalysis?.total_potential_savings || 0)}
-              </p>
+        <motion.div
+          whileHover={{ 
+            y: -8,
+            transition: { duration: 0.3, ease: "easeOut" }
+          }}
+        >
+          <GlowCard glowColor="white" customSize className="w-full h-auto p-6 hover:bg-white/10 transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-400">Potential Savings</p>
+                <p className="text-2xl font-bold text-green-400">
+                  {apiUtils.formatCurrency(costAnalysis?.total_potential_savings || 0)}
+                </p>
+              </div>
+              <div className="p-3 bg-green-500/20 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-green-400" />
+              </div>
             </div>
-            <div className="p-3 bg-green-500/20 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-green-400" />
-            </div>
-          </div>
-        </div>
+          </GlowCard>
+        </motion.div>
 
-        <div className="metric-card card-hover">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-400">Applied Optimizations</p>
-              <p className="text-2xl font-bold text-white">
-                {savingsSummary?.applied_optimizations || 0}
-              </p>
+        <motion.div
+          whileHover={{ 
+            y: -8,
+            transition: { duration: 0.3, ease: "easeOut" }
+          }}
+        >
+          <GlowCard glowColor="white" customSize className="w-full h-auto p-6 hover:bg-white/10 transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-400">Applied Optimizations</p>
+                <p className="text-2xl font-bold text-white">
+                  {savingsSummary?.applied_optimizations || 0}
+                </p>
+              </div>
+              <div className="p-3 bg-white/10 rounded-lg">
+                <CheckCircle className="w-6 h-6 text-white" />
+              </div>
             </div>
-            <div className="p-3 bg-purple-500/20 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-purple-400" />
-            </div>
-          </div>
-        </div>
+          </GlowCard>
+        </motion.div>
 
-        <div className="metric-card card-hover">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-400">Savings Percentage</p>
-              <p className="text-2xl font-bold text-yellow-400">
-                {apiUtils.formatPercentage(costAnalysis?.savings_percentage || 0)}
-              </p>
+        <motion.div
+          whileHover={{ 
+            y: -8,
+            transition: { duration: 0.3, ease: "easeOut" }
+          }}
+        >
+          <GlowCard glowColor="white" customSize className="w-full h-auto p-6 hover:bg-white/10 transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-400">Savings Percentage</p>
+                <p className="text-2xl font-bold text-white">
+                  {apiUtils.formatPercentage(costAnalysis?.savings_percentage || 0)}
+                </p>
+              </div>
+              <div className="p-3 bg-white/10 rounded-lg">
+                <Target className="w-6 h-6 text-white" />
+              </div>
             </div>
-            <div className="p-3 bg-yellow-500/20 rounded-lg">
-              <Target className="w-6 h-6 text-yellow-400" />
-            </div>
-          </div>
-        </div>
+          </GlowCard>
+        </motion.div>
       </div>
 
       {/* Tabs */}
@@ -210,8 +246,8 @@ const CostOptimizer = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-all duration-300 ${
                 activeTab === tab.id
-                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                  ? 'bg-white/10 text-white border border-white/20'
+                  : 'text-white/70 hover:text-white hover:bg-white/5'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -225,7 +261,7 @@ const CostOptimizer = () => {
       {activeTab === 'recommendations' && (
         <div className="space-y-6">
           {/* Recommendations List */}
-          <div className="glass-dark p-6 rounded-xl border border-gray-700/50">
+          <GlowCard glowColor="white" customSize className="w-full h-auto p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-white">Optimization Recommendations</h3>
               <div className="flex items-center space-x-2">
@@ -307,13 +343,13 @@ const CostOptimizer = () => {
                 )) : []}
               </div>
             )}
-          </div>
+          </GlowCard>
         </div>
       )}
 
       {activeTab === 'efficiency' && (
         <div className="space-y-6">
-          <div className="glass-dark p-6 rounded-xl border border-gray-700/50">
+          <GlowCard glowColor="white" customSize className="w-full h-auto p-6">
             <h3 className="text-lg font-semibold text-white mb-6">Workload Efficiency Analysis</h3>
             
             {efficiencyAnalysis?.workloads && efficiencyAnalysis.workloads.length > 0 ? (
@@ -331,10 +367,7 @@ const CostOptimizer = () => {
                       <div className="text-right">
                         <div className="flex items-center space-x-2">
                           <span className="text-sm text-gray-400">Efficiency:</span>
-                          <span className={`font-semibold ${
-                            workload.efficiency_score > 0.8 ? 'text-green-400' :
-                            workload.efficiency_score > 0.6 ? 'text-yellow-400' : 'text-red-400'
-                          }`}>
+                          <span className="font-semibold text-white">
                             {apiUtils.formatPercentage(workload.efficiency_score * 100)}
                           </span>
                         </div>
@@ -370,13 +403,13 @@ const CostOptimizer = () => {
                 <p className="text-gray-400">No efficiency data available</p>
               </div>
             )}
-          </div>
+          </GlowCard>
         </div>
       )}
 
       {activeTab === 'cost-analysis' && (
         <div className="space-y-6">
-          <div className="glass-dark p-6 rounded-xl border border-gray-700/50">
+          <GlowCard glowColor="white" customSize className="w-full h-auto p-6">
             <h3 className="text-lg font-semibold text-white mb-6">Cost Analysis</h3>
             
             {costAnalysis?.optimization_opportunities && costAnalysis.optimization_opportunities.length > 0 ? (
@@ -424,7 +457,7 @@ const CostOptimizer = () => {
                 <p className="text-gray-400">No cost analysis data available</p>
               </div>
             )}
-          </div>
+          </GlowCard>
         </div>
       )}
     </div>

@@ -18,6 +18,8 @@ import {
 import { workloadAPI } from '../services/api';
 import { apiUtils } from '../services/api';
 import toast from 'react-hot-toast';
+import { Button } from './ui/neon-button';
+import { GlowCard } from './ui/spotlight-card';
 
 const WorkloadManager = () => {
   const [workloads, setWorkloads] = useState([]);
@@ -198,22 +200,27 @@ const WorkloadManager = () => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold gradient-text">Workload Manager</h1>
-          <p className="text-gray-400 mt-1">Manage your AI workloads and resources</p>
+          <h1 className="text-5xl md:text-6xl md:leading-16 tracking-tight font-light text-white mb-2">
+            <span className="font-medium italic instrument">Workload Manager</span>
+          </h1>
+          <p className="text-xs font-light text-white/70 leading-relaxed">Manage your AI workloads and resources</p>
         </div>
-        <button
-          onClick={() => setShowCreateForm(true)}
-          className="btn-primary flex items-center space-x-2"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Create Workload</span>
-        </button>
+        <div className="flex justify-end">
+          <Button
+            onClick={() => setShowCreateForm(true)}
+            variant="default"
+            className="flex items-center space-x-2"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Create Workload</span>
+          </Button>
+        </div>
       </div>
 
       {/* Create/Edit Form Modal */}
       {(showCreateForm || editingWorkload) && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass-dark p-6 rounded-xl w-full max-w-md border border-gray-700/50">
+          <GlowCard glowColor="white" customSize className="w-full max-w-md p-6">
             <h2 className="text-xl font-semibold text-white mb-6">
               {editingWorkload ? 'Edit Workload' : 'Create New Workload'}
             </h2>
@@ -319,7 +326,7 @@ const WorkloadManager = () => {
                 </button>
               </div>
             </form>
-          </div>
+          </GlowCard>
         </div>
       )}
 
@@ -339,19 +346,21 @@ const WorkloadManager = () => {
           </div>
         ) : (
           workloads.map((workload) => (
-            <div
+            <GlowCard
               key={workload.id}
-              className="glass-dark p-6 rounded-xl border border-gray-700/50 hover:border-gray-600/50 transition-all duration-300 card-hover"
+              glowColor="white"
+              customSize
+              className="w-full h-auto p-6"
             >
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-gray-700/50 rounded-lg">
-                    <Server className="w-5 h-5 text-gray-300" />
+                  <div className="p-2 bg-white/10 rounded-lg">
+                    <Server className="w-5 h-5 text-white" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-white">{workload.name}</h3>
-                    <p className="text-sm text-gray-400 capitalize">{workload.type}</p>
+                    <p className="text-sm text-white/70 capitalize">{workload.type}</p>
                   </div>
                 </div>
                 <div className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(workload.status)}`}>
@@ -366,16 +375,16 @@ const WorkloadManager = () => {
               <div className="space-y-3 mb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Cpu className="w-4 h-4 text-blue-400" />
-                    <span className="text-sm text-gray-300">CPU</span>
+                    <Cpu className="w-4 h-4 text-white" />
+                    <span className="text-sm text-white/70">CPU</span>
                   </div>
                   <span className="text-sm font-medium text-white">{workload.cpu_cores} cores</span>
                 </div>
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <MemoryStick className="w-4 h-4 text-purple-400" />
-                    <span className="text-sm text-gray-300">Memory</span>
+                    <MemoryStick className="w-4 h-4 text-white" />
+                    <span className="text-sm text-white/70">Memory</span>
                   </div>
                   <span className="text-sm font-medium text-white">{workload.memory_gb} GB</span>
                 </div>
@@ -383,8 +392,8 @@ const WorkloadManager = () => {
                 {workload.gpu_count > 0 && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Zap className="w-4 h-4 text-green-400" />
-                      <span className="text-sm text-gray-300">GPU</span>
+                      <Zap className="w-4 h-4 text-white" />
+                      <span className="text-sm text-white/70">GPU</span>
                     </div>
                     <span className="text-sm font-medium text-white">{workload.gpu_count} units</span>
                   </div>
@@ -392,8 +401,8 @@ const WorkloadManager = () => {
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <DollarSign className="w-4 h-4 text-yellow-400" />
-                    <span className="text-sm text-gray-300">Cost</span>
+                    <DollarSign className="w-4 h-4 text-white" />
+                    <span className="text-sm text-white/70">Cost</span>
                   </div>
                   <span className="text-sm font-medium text-white">
                     {apiUtils.formatCurrency(workload.cost_per_hour)}/hr
@@ -436,13 +445,7 @@ const WorkloadManager = () => {
                 </button>
               </div>
 
-              {/* Created Date */}
-              <div className="mt-4 pt-4 border-t border-gray-700/50">
-                <p className="text-xs text-gray-400">
-                  Created {apiUtils.formatRelativeTime(workload.created_at)}
-                </p>
-              </div>
-            </div>
+            </GlowCard>
           ))
         )}
       </div>

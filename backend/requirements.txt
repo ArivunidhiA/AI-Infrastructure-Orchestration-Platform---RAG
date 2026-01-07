@@ -19,6 +19,7 @@ pinecone-client>=2.2.4
 # LLM and RAG
 langchain>=0.1.0
 langchain-aws>=0.1.0
+openai>=1.0.0
 
 # Additional utilities
 redis>=5.0.0

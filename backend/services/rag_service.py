@@ -17,34 +17,48 @@ class RAGService:
     def query(self, query: str, tenant_id: str) -> Dict[str, Any]:
         """Complete RAG query pipeline"""
         try:
+            query_lower = query.lower().strip()
+            
+            # Handle simple greetings and casual queries
+            simple_greetings = ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'howdy', 'greetings']
+            is_simple_greeting = any(query_lower == greeting or query_lower.startswith(greeting + ' ') for greeting in simple_greetings)
+            
+            if is_simple_greeting or len(query_lower) < 10:
+                # Simple, friendly response for greetings
+                return {
+                    'answer': "Hello! I'm here to help you with questions about AI infrastructure, workload management, cost optimization, and more. What would you like to know?",
+                    'sources': [],
+                    'confidence_score': 0.95
+                }
+            
             # Step 1: Vector search to retrieve relevant documents
             relevant_docs = self.vector_service.search(query, tenant_id, top_k=3)
             
             # Step 2: Generate response using LLM with context
-            if relevant_docs:
+            if relevant_docs and len(relevant_docs) > 0:
                 context = "\n\n".join([
                     f"Document: {doc['title']}\n{doc['content']}"
                     for doc in relevant_docs
                 ])
                 
-                prompt = f"""You are an AI assistant helping with infrastructure questions.
+                prompt = f"""You are an AI assistant helping with infrastructure questions. Keep responses concise and helpful.
 
 Context from knowledge base:
 {context}
 
 Question: {query}
 
-Please provide a helpful answer based on the context above. If the context doesn't contain relevant information, say so."""
+Please provide a helpful, concise answer based on the context above. If the context doesn't contain relevant information, say so briefly."""
                 
-                answer = self.llm_service.generate_response(prompt)
+                answer = self.llm_service.generate_response(prompt, max_tokens=500)
                 
                 # Calculate confidence based on similarity scores
                 avg_similarity = sum(doc.get('similarity_score', 0) for doc in relevant_docs) / len(relevant_docs)
                 confidence = min(0.95, max(0.3, avg_similarity))
             else:
-                # No relevant documents found
-                answer = "I don't have specific information about that topic in my knowledge base. Please try rephrasing your question or ask about GPU optimization, cost management, memory troubleshooting, auto-scaling, model performance, resource allocation, system monitoring, or performance bottlenecks."
-                confidence = 0.1
+                # No relevant documents found - provide helpful guidance
+                answer = "I don't have specific information about that topic in my knowledge base. You can ask me about GPU optimization, cost management, workload management, model training, or infrastructure monitoring. What would you like to know?"
+                confidence = 0.3
             
             # Format sources
             sources = [

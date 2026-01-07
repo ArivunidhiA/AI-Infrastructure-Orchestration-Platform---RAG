@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Bell, Search, User, Activity } from 'lucide-react';
+import { Menu, Bell, User, Activity, Home } from 'lucide-react';
 import { monitoringAPI } from '../services/api';
 
-const Header = ({ onToggleSidebar }) => {
+const Header = ({ onToggleSidebar, onBackToLanding }) => {
   const [alerts, setAlerts] = useState([]);
   const [showAlerts, setShowAlerts] = useState(false);
   const [systemStatus, setSystemStatus] = useState('online');
-  const [searchQuery, setSearchQuery] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   useEffect(() => {
@@ -29,25 +28,15 @@ const Header = ({ onToggleSidebar }) => {
   const criticalAlerts = alerts.filter(alert => alert.type === 'warning').length;
   const hasAlerts = criticalAlerts > 0;
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      // Implement search functionality
-      console.log('Searching for:', searchQuery);
-      // You can add actual search logic here
-      alert(`Searching for: ${searchQuery}`);
-    }
-  };
-
   const handleUserMenuToggle = () => {
     setShowUserMenu(!showUserMenu);
   };
 
   return (
-    <header className="bg-black/50 backdrop-blur-lg border-b border-gray-800/50 px-6 py-4">
+    <header className="bg-black/50 backdrop-blur-lg border-b border-gray-800/50 px-4 py-4">
       <div className="flex items-center justify-between">
         {/* Left side */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 pl-0">
           <button
             onClick={onToggleSidebar}
             className="lg:hidden p-2 rounded-lg hover:bg-gray-800 transition-colors"
@@ -55,25 +44,26 @@ const Header = ({ onToggleSidebar }) => {
             <Menu className="w-6 h-6 text-gray-300" />
           </button>
           
-          <div className="hidden md:flex items-center space-x-2">
-            <Activity className="w-5 h-5 text-blue-400" />
-            <h2 className="text-xl font-semibold text-white">AI Infrastructure Platform</h2>
+          <div className="hidden md:flex items-center space-x-4">
+            {onBackToLanding && (
+              <button
+                onClick={onBackToLanding}
+                className="p-2 rounded-lg hover:bg-gray-800 transition-colors ml-0"
+                title="Back to Landing Page"
+              >
+                <Home className="w-5 h-5 text-gray-300" />
+              </button>
+            )}
+            <div className="flex items-center space-x-2">
+              <Activity className="w-5 h-5 text-blue-400" />
+              <h2 className="text-xl font-light tracking-tight text-white">
+                <span className="font-medium italic instrument">AI Infrastructure</span>
+                <span className="font-light"> Orchestration Platform</span>
+              </h2>
+            </div>
           </div>
         </div>
 
-        {/* Center - Search */}
-        <div className="hidden md:flex flex-1 max-w-md mx-8">
-          <form onSubmit={handleSearch} className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search workloads, documents..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white focus:border-white transition-all duration-200"
-            />
-          </form>
-        </div>
 
         {/* Right side */}
         <div className="flex items-center space-x-4">
@@ -194,17 +184,6 @@ const Header = ({ onToggleSidebar }) => {
         </div>
       </div>
 
-      {/* Mobile Search */}
-      <div className="md:hidden mt-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-          />
-        </div>
-      </div>
     </header>
   );
 };

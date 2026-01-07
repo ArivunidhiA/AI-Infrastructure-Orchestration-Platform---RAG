@@ -46,6 +46,11 @@ class Settings(BaseSettings):
     bedrock_region: str = os.getenv("BEDROCK_REGION", "us-east-1")
     bedrock_embedding_model: str = os.getenv("BEDROCK_EMBEDDING_MODEL", "amazon.titan-embed-text-v1")
     
+    # OpenAI
+    openai_api_key: Optional[str] = os.getenv("OPENAI_API_KEY")
+    openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    openai_embedding_model: str = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
+    
     # OpenSearch (Alternative to Pinecone)
     opensearch_endpoint: Optional[str] = os.getenv("OPENSEARCH_ENDPOINT")
     opensearch_user: Optional[str] = os.getenv("OPENSEARCH_USER")
@@ -60,7 +65,8 @@ class Settings(BaseSettings):
     # Feature Flags
     use_mock_data: bool = os.getenv("USE_MOCK_DATA", "false").lower() == "true"
     use_pinecone: bool = os.getenv("USE_PINECONE", "true").lower() == "true"
-    use_bedrock: bool = os.getenv("USE_BEDROCK", "true").lower() == "true"
+    use_bedrock: bool = os.getenv("USE_BEDROCK", "false").lower() == "true"
+    use_openai: bool = os.getenv("USE_OPENAI", "true").lower() == "true"
     enable_cloudwatch: bool = os.getenv("ENABLE_CLOUDWATCH", "false").lower() == "true"
     
     # CloudWatch

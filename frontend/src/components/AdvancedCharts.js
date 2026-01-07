@@ -5,6 +5,8 @@ import {
   Bar,
   AreaChart,
   Area,
+  LineChart,
+  Line,
   PieChart,
   Pie,
   Cell,
@@ -46,14 +48,108 @@ const AdvancedCharts = ({ type, data, title, subtitle }) => {
     return null;
   };
 
-  const COLORS = ['#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
+  const COLORS = ['#ffffff', '#e5e5e5', '#d4d4d4', '#a3a3a3', '#737373', '#525252'];
 
   const renderChart = () => {
     switch (type) {
       case 'resource-usage':
+        // Transform data to show time-based trends if needed, or use workload-based line chart
+        const chartData = Array.isArray(data) && data.length > 0 && data[0].time
+          ? data // If data already has time-based structure
+          : // Otherwise, create time-based data from workload data
+            Array.from({ length: 7 }, (_, i) => {
+              const date = new Date();
+              date.setDate(date.getDate() - (6 - i));
+              const workloads = Array.isArray(data) ? data : [];
+              return {
+                time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                cpu: workloads.length > 0 
+                  ? Math.round(workloads.reduce((sum, w) => sum + (w.cpu || 0), 0) / workloads.length)
+                  : Math.floor(Math.random() * 30) + 40,
+                memory: workloads.length > 0
+                  ? Math.round(workloads.reduce((sum, w) => sum + (w.memory || 0), 0) / workloads.length)
+                  : Math.floor(Math.random() * 25) + 45,
+                gpu: workloads.length > 0 && workloads.some(w => w.gpu > 0)
+                  ? Math.round(workloads.filter(w => w.gpu > 0).reduce((sum, w) => sum + (w.gpu || 0), 0) / workloads.filter(w => w.gpu > 0).length)
+                  : 0
+              };
+            });
+        
         return (
           <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 100 }}>
+            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <defs>
+                <linearGradient id="cpuLineGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#ffffff" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#ffffff" stopOpacity={0}/>
+                </linearGradient>
+                <linearGradient id="memoryLineGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#e5e5e5" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#e5e5e5" stopOpacity={0}/>
+                </linearGradient>
+                <linearGradient id="gpuLineGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#d4d4d4" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#d4d4d4" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+              <XAxis 
+                dataKey="time" 
+                stroke="#9ca3af"
+                fontSize={12}
+                tickFormatter={(value) => value}
+              />
+              <YAxis 
+                stroke="#9ca3af"
+                fontSize={12}
+                domain={[0, 100]}
+                tickFormatter={(value) => `${value}%`}
+              />
+              <Tooltip 
+                content={<CustomTooltip />}
+                formatter={(value) => [`${value}%`, '']}
+              />
+              <Legend 
+                wrapperStyle={{ color: '#9ca3af', fontSize: '12px' }}
+                iconType="line"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="cpu" 
+                stroke="#ffffff" 
+                strokeWidth={3}
+                dot={{ fill: '#ffffff', r: 4 }}
+                activeDot={{ r: 6 }}
+                name="CPU Usage"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="memory" 
+                stroke="#e5e5e5" 
+                strokeWidth={3}
+                dot={{ fill: '#e5e5e5', r: 4 }}
+                activeDot={{ r: 6 }}
+                name="Memory Usage"
+              />
+              {chartData.some(d => d.gpu > 0) && (
+                <Line 
+                  type="monotone" 
+                  dataKey="gpu" 
+                  stroke="#d4d4d4" 
+                  strokeWidth={3}
+                  dot={{ fill: '#d4d4d4', r: 4 }}
+                  activeDot={{ r: 6 }}
+                  name="GPU Usage"
+                />
+              )}
+            </LineChart>
+          </ResponsiveContainer>
+        );
+
+      case 'resource-usage-trends':
+        return (
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={data} margin={{ top: 20, right: 30, left: 30, bottom: 80 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
               <XAxis 
                 dataKey="name" 
@@ -65,9 +161,7 @@ const AdvancedCharts = ({ type, data, title, subtitle }) => {
                 interval={0}
                 tick={{ 
                   fontSize: 10,
-                  fill: '#9ca3af',
-                  wordWrap: 'break-word',
-                  whiteSpace: 'normal'
+                  fill: '#9ca3af'
                 }}
               />
               <YAxis 
@@ -77,39 +171,11 @@ const AdvancedCharts = ({ type, data, title, subtitle }) => {
                 tickFormatter={(value) => `${value}%`}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Bar 
-                dataKey="cpu" 
-                fill="url(#cpuGradient)" 
-                name="CPU Usage" 
-                radius={[4, 4, 0, 0]}
-              />
-              <Bar 
-                dataKey="memory" 
-                fill="url(#memoryGradient)" 
-                name="Memory Usage" 
-                radius={[4, 4, 0, 0]}
-              />
-              <Bar 
-                dataKey="gpu" 
-                fill="url(#gpuGradient)" 
-                name="GPU Usage" 
-                radius={[4, 4, 0, 0]}
-              />
-              <defs>
-                <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                </linearGradient>
-                <linearGradient id="memoryGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                </linearGradient>
-                <linearGradient id="gpuGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.3}/>
-                </linearGradient>
-              </defs>
-            </BarChart>
+              <Legend />
+              <Line type="monotone" dataKey="cpu" stroke="#ffffff" name="CPU Usage" activeDot={{ r: 8 }} strokeWidth={2} />
+              <Line type="monotone" dataKey="memory" stroke="#e5e5e5" name="Memory Usage" activeDot={{ r: 8 }} strokeWidth={2} />
+              <Line type="monotone" dataKey="gpu" stroke="#d4d4d4" name="GPU Usage" activeDot={{ r: 8 }} strokeWidth={2} />
+            </LineChart>
           </ResponsiveContainer>
         );
 
@@ -119,8 +185,8 @@ const AdvancedCharts = ({ type, data, title, subtitle }) => {
             <AreaChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <defs>
                 <linearGradient id="costGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.05}/>
+                  <stop offset="5%" stopColor="#ffffff" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#ffffff" stopOpacity={0.05}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
@@ -143,7 +209,7 @@ const AdvancedCharts = ({ type, data, title, subtitle }) => {
               <Area
                 type="monotone"
                 dataKey="total_cost"
-                stroke="#8b5cf6"
+                stroke="#ffffff"
                 strokeWidth={3}
                 fill="url(#costGradient)"
               />
@@ -181,7 +247,7 @@ const AdvancedCharts = ({ type, data, title, subtitle }) => {
               <RadialBar
                 dataKey="value"
                 cornerRadius={10}
-                fill="#3b82f6"
+                fill="#ffffff"
               />
               <Tooltip content={<CustomTooltip />} />
             </RadialBarChart>
@@ -206,7 +272,7 @@ const AdvancedCharts = ({ type, data, title, subtitle }) => {
     >
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-xl font-bold gradient-text">{title}</h3>
+          <h3 className="text-xl font-light text-white">{title}</h3>
           {subtitle && (
             <p className="text-gray-400 text-sm mt-1">{subtitle}</p>
           )}
@@ -215,8 +281,8 @@ const AdvancedCharts = ({ type, data, title, subtitle }) => {
           className="flex items-center space-x-2"
           whileHover={{ scale: 1.05 }}
         >
-          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-          <span className="text-sm text-gray-300 font-medium">Live</span>
+          <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse" />
+          <span className="text-sm text-white/70 font-medium">Live</span>
         </motion.div>
       </div>
 

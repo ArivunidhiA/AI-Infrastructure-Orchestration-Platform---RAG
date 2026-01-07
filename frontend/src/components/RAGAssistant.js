@@ -18,6 +18,8 @@ import {
 import { ragAPI } from '../services/api';
 import { apiUtils } from '../services/api';
 import toast from 'react-hot-toast';
+import { Button } from './ui/neon-button';
+import { GlowCard } from './ui/spotlight-card';
 
 const RAGAssistant = () => {
   const [query, setQuery] = useState('');
@@ -56,17 +58,30 @@ const RAGAssistant = () => {
       const questionsData = questionsResponse.data || questionsResponse;
       const documentsData = documentsResponse.data || documentsResponse;
       
-      setSuggestedQuestions(Array.isArray(questionsData.suggested_questions) ? questionsData.suggested_questions : []);
+      // Extract suggested questions - handle both direct array and nested object
+      let questions = [];
+      if (Array.isArray(questionsData)) {
+        questions = questionsData;
+      } else if (questionsData.suggested_questions && Array.isArray(questionsData.suggested_questions)) {
+        questions = questionsData.suggested_questions;
+      } else if (questionsData.data && Array.isArray(questionsData.data.suggested_questions)) {
+        questions = questionsData.data.suggested_questions;
+      }
+      
+      setSuggestedQuestions(questions);
       setDocuments(Array.isArray(documentsData.documents) ? documentsData.documents : Array.isArray(documentsData) ? documentsData : []);
     } catch (error) {
       console.error('Error fetching initial data:', error);
       // Set fallback data
       setSuggestedQuestions([
+        "What are the workloads we have now?",
         "How can I optimize my GPU usage?",
         "What are the best practices for cost management?",
         "How do I troubleshoot high memory usage?",
         "What is auto-scaling and how does it work?",
-        "How can I improve my model performance?"
+        "How can I improve my model performance?",
+        "What is the current infrastructure setup?",
+        "How much are we spending on workloads monthly?"
       ]);
       setDocuments([]);
     }
@@ -179,9 +194,9 @@ const RAGAssistant = () => {
   };
 
   const getConfidenceColor = (confidence) => {
-    if (confidence > 0.8) return 'text-green-400';
-    if (confidence > 0.6) return 'text-yellow-400';
-    return 'text-red-400';
+    if (confidence > 0.8) return 'text-white/80';
+    if (confidence > 0.6) return 'text-white/70';
+    return 'text-white/60';
   };
 
   return (
@@ -189,24 +204,28 @@ const RAGAssistant = () => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold gradient-text">AI Knowledge Assistant</h1>
-          <p className="text-gray-400 mt-1">Ask questions about your infrastructure and get intelligent answers</p>
+          <h1 className="text-5xl md:text-6xl md:leading-16 tracking-tight font-light text-white mb-2">
+            <span className="font-medium italic instrument">AI Knowledge Assistant</span>
+          </h1>
+          <p className="text-xs font-light text-white/70 leading-relaxed">Ask questions about your infrastructure and get intelligent answers</p>
         </div>
         <div className="flex items-center space-x-3">
-          <button
+          <Button
             onClick={() => setShowUpload(true)}
-            className="btn-secondary flex items-center space-x-2"
+            variant="default"
+            className="flex items-center space-x-2"
           >
             <Upload className="w-4 h-4" />
             <span>Upload Document</span>
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={clearChat}
-            className="btn-danger flex items-center space-x-2"
+            variant="default"
+            className="flex items-center space-x-2"
           >
             <Trash2 className="w-4 h-4" />
             <span>Clear Chat</span>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -224,8 +243,8 @@ const RAGAssistant = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-all duration-300 ${
                 activeTab === tab.id
-                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                  ? 'bg-white/10 text-white border border-white/20'
+                  : 'text-white/70 hover:text-white hover:bg-white/5'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -240,7 +259,7 @@ const RAGAssistant = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Chat Area */}
           <div className="lg:col-span-3">
-            <div className="glass-dark rounded-xl border border-gray-700/50 h-[600px] flex flex-col">
+            <GlowCard glowColor="white" customSize className="w-full h-[600px] flex flex-col p-0">
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.length === 0 ? (
@@ -251,7 +270,6 @@ const RAGAssistant = () => {
                     
                     {/* Suggested Questions */}
                     <div className="space-y-2">
-                      <p className="text-sm text-gray-500">Try asking:</p>
                       {Array.isArray(suggestedQuestions) ? suggestedQuestions.slice(0, 3).map((question, index) => (
                         <button
                           key={index}
@@ -270,39 +288,43 @@ const RAGAssistant = () => {
                       className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
                       <div className={`max-w-3xl ${message.type === 'user' ? 'rag-user' : 'rag-assistant'}`}>
-                        <div className="flex items-start space-x-3">
-                          <div className={`p-2 rounded-lg ${
-                            message.type === 'user' 
-                              ? 'bg-blue-500/20' 
-                              : 'bg-gray-700/50'
-                          }`}>
+                        <div className={`flex items-start space-x-3 ${
+                          message.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+                        }`}>
+                          <div className="p-2 rounded-lg bg-white/10 flex-shrink-0">
                             {message.type === 'user' ? (
-                              <User className="w-4 h-4 text-blue-400" />
+                              <User className="w-4 h-4 text-white" />
                             ) : (
-                              <Bot className="w-4 h-4 text-gray-400" />
+                              <Bot className="w-4 h-4 text-white" />
                             )}
                           </div>
                           
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <span className="text-sm font-medium text-white">
+                          <div className={`flex-1 ${message.type === 'user' ? 'text-right' : ''}`}>
+                            <div className={`flex items-center space-x-2 mb-2 ${message.type === 'user' ? 'justify-end' : ''}`}>
+                              <span className="text-sm font-medium text-white/90">
                                 {message.type === 'user' ? 'You' : 'AI Assistant'}
                               </span>
-                              {message.confidence && (
+                              {message.confidence && message.type === 'assistant' && (
                                 <span className={`text-xs ${getConfidenceColor(message.confidence)}`}>
                                   {apiUtils.formatPercentage(message.confidence * 100)} confidence
                                 </span>
                               )}
                             </div>
                             
-                            <p className="text-gray-300 whitespace-pre-wrap">{message.content}</p>
+                            <div className={`rounded-lg p-3 ${
+                              message.type === 'user' 
+                                ? 'bg-white/5 border border-white/10' 
+                                : 'bg-white/5 border border-white/10'
+                            }`}>
+                              <p className="text-white/90 whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                            </div>
                             
                             {message.sources && message.sources.length > 0 && (
-                              <div className="mt-3 p-3 bg-gray-800/50 rounded-lg">
-                                <p className="text-xs text-gray-400 mb-2">Sources:</p>
+                              <div className="mt-3 p-3 bg-white/5 rounded-lg border border-white/10">
+                                <p className="text-xs text-white/60 mb-2">Sources:</p>
                                 <div className="space-y-1">
                                   {message.sources.map((source, index) => (
-                                    <div key={index} className="text-xs text-blue-400">
+                                    <div key={index} className="text-xs text-white/70">
                                       • {source.title} ({source.doc_type})
                                     </div>
                                   ))}
@@ -310,7 +332,7 @@ const RAGAssistant = () => {
                               </div>
                             )}
                             
-                            <p className="text-xs text-gray-500 mt-2">
+                            <p className="text-xs text-white/40 mt-2">
                               {apiUtils.formatRelativeTime(message.timestamp)}
                             </p>
                           </div>
@@ -322,16 +344,18 @@ const RAGAssistant = () => {
                 
                 {loading && (
                   <div className="flex justify-start">
-                    <div className="rag-assistant">
+                    <div className="max-w-3xl">
                       <div className="flex items-start space-x-3">
-                        <div className="p-2 rounded-lg bg-gray-700/50">
-                          <Bot className="w-4 h-4 text-gray-400" />
+                        <div className="p-2 rounded-lg bg-white/10">
+                          <Bot className="w-4 h-4 text-white" />
                         </div>
                         <div className="flex-1">
-                          <span className="text-sm font-medium text-white mb-2 block">AI Assistant</span>
-                          <div className="flex items-center space-x-2">
-                            <div className="spinner"></div>
-                            <span className="text-gray-400">Thinking...</span>
+                          <span className="text-sm font-medium text-white/90 mb-2 block">AI Assistant</span>
+                          <div className="rounded-lg p-3 bg-white/5 border border-white/10">
+                            <div className="flex items-center space-x-2">
+                              <div className="spinner"></div>
+                              <span className="text-white/70">Thinking...</span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -362,13 +386,13 @@ const RAGAssistant = () => {
                   </button>
                 </form>
               </div>
-            </div>
+            </GlowCard>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Suggested Questions */}
-            <div className="glass-dark p-4 rounded-xl border border-gray-700/50">
+            <GlowCard glowColor="white" customSize className="w-full h-auto p-4">
               <h3 className="text-sm font-semibold text-white mb-3 flex items-center">
                 <Lightbulb className="w-4 h-4 mr-2" />
                 Suggested Questions
@@ -384,10 +408,10 @@ const RAGAssistant = () => {
                   </button>
                 )) : []}
               </div>
-            </div>
+            </GlowCard>
 
             {/* Quick Stats */}
-            <div className="glass-dark p-4 rounded-xl border border-gray-700/50">
+            <GlowCard glowColor="white" customSize className="w-full h-auto p-4">
               <h3 className="text-sm font-semibold text-white mb-3 flex items-center">
                 <BookOpen className="w-4 h-4 mr-2" />
                 Knowledge Base
@@ -402,7 +426,7 @@ const RAGAssistant = () => {
                   <span className="text-white">{messages.filter(m => m.type === 'user').length}</span>
                 </div>
               </div>
-            </div>
+            </GlowCard>
           </div>
         </div>
       )}
@@ -423,14 +447,16 @@ const RAGAssistant = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.isArray(documents) ? documents.map((doc) => (
-              <div
+              <GlowCard
                 key={doc.id}
-                className="glass-dark p-4 rounded-xl border border-gray-700/50 hover:border-gray-600/50 transition-all duration-300"
+                glowColor="white"
+                customSize
+                className="w-full h-auto p-4"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center space-x-2">
-                    <FileText className="w-5 h-5 text-blue-400" />
-                    <span className="text-xs text-gray-400 capitalize">{doc.doc_type}</span>
+                    <FileText className="w-5 h-5 text-white" />
+                    <span className="text-xs text-white/70 capitalize">{doc.doc_type}</span>
                   </div>
                   <button
                     onClick={() => handleDeleteDocument(doc.id)}
@@ -449,7 +475,7 @@ const RAGAssistant = () => {
                   <span>{apiUtils.formatRelativeTime(doc.upload_date)}</span>
                   <span>{doc.content.length} chars</span>
                 </div>
-              </div>
+              </GlowCard>
             )) : (
               <div className="col-span-full text-center py-12">
                 <FileText className="w-16 h-16 text-gray-600 mx-auto mb-4" />
@@ -464,7 +490,7 @@ const RAGAssistant = () => {
       {/* Search Tab */}
       {activeTab === 'search' && (
         <div className="space-y-6">
-          <div className="glass-dark p-6 rounded-xl border border-gray-700/50">
+          <GlowCard glowColor="white" customSize className="w-full h-auto p-6">
             <h3 className="text-lg font-semibold text-white mb-4">Search Knowledge Base</h3>
             
             <form onSubmit={handleSearch} className="flex space-x-3 mb-6">
@@ -494,7 +520,7 @@ const RAGAssistant = () => {
                       <h4 className="font-medium text-white">{result.title}</h4>
                       <div className="flex items-center space-x-2">
                         <span className="text-xs text-gray-400 capitalize">{result.doc_type}</span>
-                        <span className="text-xs text-blue-400">
+                        <span className="text-xs text-white/70">
                           {apiUtils.formatPercentage(result.similarity_score * 100)} match
                         </span>
                       </div>
@@ -507,14 +533,14 @@ const RAGAssistant = () => {
                 ))}
               </div>
             )}
-          </div>
+          </GlowCard>
         </div>
       )}
 
       {/* Upload Modal */}
       {showUpload && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass-dark p-6 rounded-xl w-full max-w-md border border-gray-700/50">
+          <GlowCard glowColor="white" customSize className="w-full max-w-md p-6">
             <h2 className="text-xl font-semibold text-white mb-4">Upload Document</h2>
             
             <div className="space-y-4">
@@ -542,7 +568,7 @@ const RAGAssistant = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </GlowCard>
         </div>
       )}
     </div>

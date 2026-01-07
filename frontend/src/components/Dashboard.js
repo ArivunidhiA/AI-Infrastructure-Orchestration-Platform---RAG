@@ -13,6 +13,7 @@ import {
 import { monitoringAPI, workloadAPI } from '../services/api';
 import { apiUtils } from '../services/api';
 import AdvancedCharts from './AdvancedCharts';
+import { GlowCard } from './ui/spotlight-card';
 
 const Dashboard = () => {
   const [dashboardStats, setDashboardStats] = useState(null);
@@ -46,15 +47,15 @@ const Dashboard = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'running':
-        return <CheckCircle className="w-4 h-4 text-green-400" />;
+        return <CheckCircle className="w-4 h-4 text-white" />;
       case 'pending':
-        return <Clock className="w-4 h-4 text-yellow-400" />;
+        return <Clock className="w-4 h-4 text-white" />;
       case 'completed':
-        return <CheckCircle className="w-4 h-4 text-blue-400" />;
+        return <CheckCircle className="w-4 h-4 text-white" />;
       case 'failed':
-        return <AlertTriangle className="w-4 h-4 text-red-400" />;
+        return <AlertTriangle className="w-4 h-4 text-white" />;
       default:
-        return <Clock className="w-4 h-4 text-gray-400" />;
+        return <Clock className="w-4 h-4 text-white/70" />;
     }
   };
 
@@ -116,7 +117,7 @@ const Dashboard = () => {
 
   return (
     <motion.div 
-      className="space-y-8"
+      className="space-y-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -128,15 +129,15 @@ const Dashboard = () => {
       >
         <div>
           <motion.h1 
-            className="text-5xl font-bold gradient-text-glow mb-2"
+            className="text-5xl md:text-6xl md:leading-16 tracking-tight font-light text-white mb-2"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            Dashboard
+            <span className="font-medium italic instrument">Dashboard</span>
           </motion.h1>
           <motion.p 
-            className="text-gray-400 text-xl"
+            className="text-xs font-light text-white/70 leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -145,7 +146,7 @@ const Dashboard = () => {
           </motion.p>
         </div>
         <motion.div 
-          className="flex items-center space-x-4"
+          className="flex items-center space-x-4 ml-auto"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
@@ -169,7 +170,6 @@ const Dashboard = () => {
         
         {/* Floating elements */}
         <motion.div 
-          className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl"
           animate={{
             y: [0, -20, 0],
             x: [0, 10, 0],
@@ -179,34 +179,6 @@ const Dashboard = () => {
             duration: 8,
             repeat: Infinity,
             ease: "easeInOut"
-          }}
-        />
-        <motion.div 
-          className="absolute top-10 left-10 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl"
-          animate={{
-            y: [0, 15, 0],
-            x: [0, -10, 0],
-            scale: [1, 0.9, 1]
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1
-          }}
-        />
-        <motion.div 
-          className="absolute bottom-0 right-20 w-16 h-16 bg-cyan-500/10 rounded-full blur-xl"
-          animate={{
-            y: [0, -10, 0],
-            x: [0, 5, 0],
-            scale: [1, 1.2, 1]
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2
           }}
         />
       </motion.div>
@@ -240,16 +212,16 @@ const Dashboard = () => {
               </motion.p>
             </div>
             <motion.div 
-              className="p-4 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/30"
+              className="p-4 bg-white/10 rounded-xl border border-white/20"
               whileHover={{ rotate: 5 }}
               transition={{ duration: 0.2 }}
             >
-              <Server className="w-6 h-6 text-blue-400" />
+              <Server className="w-6 h-6 text-white" />
             </motion.div>
           </div>
           <div className="mt-4 flex items-center text-sm">
             <motion.div 
-              className="w-2 h-2 bg-green-400 rounded-full mr-2"
+              className="w-2 h-2 bg-white/60 rounded-full mr-2"
               animate={{ 
                 scale: [1, 1.2, 1],
                 opacity: [0.7, 1, 0.7]
@@ -260,7 +232,7 @@ const Dashboard = () => {
                 ease: "easeInOut"
               }}
             />
-            <span className="text-green-400 font-medium">
+            <span className="text-white/80 font-medium">
               {dashboardStats?.running_workloads || 0} running
             </span>
           </div>
@@ -275,13 +247,13 @@ const Dashboard = () => {
                 {apiUtils.formatCurrency(dashboardStats?.total_monthly_cost || 0)}
               </p>
             </div>
-            <div className="p-4 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl border border-green-500/30">
-              <DollarSign className="w-6 h-6 text-green-400" />
+            <div className="p-4 bg-white/10 rounded-xl border border-white/20">
+              <DollarSign className="w-6 h-6 text-white" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-            <span className="text-green-400 font-medium">
+            <div className="w-2 h-2 bg-white/60 rounded-full mr-2"></div>
+            <span className="text-white/80 font-medium">
               {apiUtils.formatCurrency(dashboardStats?.cost_savings || 0)} saved
             </span>
           </div>
@@ -296,8 +268,8 @@ const Dashboard = () => {
                 {apiUtils.formatPercentage(dashboardStats?.avg_cpu_usage || 0)}
               </p>
             </div>
-            <div className="p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl border border-purple-500/30">
-              <Activity className="w-6 h-6 text-purple-400" />
+            <div className="p-4 bg-white/10 rounded-xl border border-white/20">
+              <Activity className="w-6 h-6 text-white" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
@@ -329,11 +301,11 @@ const Dashboard = () => {
               </motion.p>
             </div>
             <motion.div 
-              className="p-4 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl border border-cyan-500/30"
+              className="p-4 bg-white/10 rounded-xl border border-white/20"
               whileHover={{ rotate: 5 }}
               transition={{ duration: 0.2 }}
             >
-              <TrendingUp className="w-6 h-6 text-cyan-400" />
+              <TrendingUp className="w-6 h-6 text-white" />
             </motion.div>
           </div>
           <div className="mt-4 flex items-center text-sm">
@@ -348,44 +320,63 @@ const Dashboard = () => {
         variants={containerVariants}
       >
         {/* Resource Usage Chart */}
-        <motion.div variants={itemVariants}>
-          <AdvancedCharts 
-            type="resource-usage"
-            data={Array.isArray(workloads) ? workloads.slice(0, 5).map((workload, index) => ({
-              name: workload.name && workload.name.length > 15 ? workload.name.substring(0, 15) + '...' : workload.name || `Workload ${index + 1}`,
-              cpu: Math.floor(Math.random() * 40) + 30, // 30-70% CPU usage
-              memory: Math.floor(Math.random() * 30) + 40, // 40-70% Memory usage
-              gpu: workload.gpu_count > 0 ? Math.floor(Math.random() * 50) + 20 : 0 // 20-70% GPU usage if GPU available
-            })) : []}
-            title="Resource Usage"
-            subtitle="Current workload resource consumption"
-          />
+        <motion.div 
+          variants={itemVariants}
+          whileHover={{ 
+            y: -8,
+            transition: { duration: 0.3, ease: "easeOut" }
+          }}
+        >
+          <GlowCard glowColor="white" customSize className="w-full h-auto p-6 hover:bg-white/10 transition-all duration-300">
+            <AdvancedCharts 
+              type="resource-usage-trends"
+              data={[
+                { name: 'Jan 1', cpu: 45, memory: 52, gpu: 28 },
+                { name: 'Jan 2', cpu: 58, memory: 48, gpu: 32 },
+                { name: 'Jan 3', cpu: 52, memory: 55, gpu: 25 },
+                { name: 'Jan 4', cpu: 65, memory: 60, gpu: 35 },
+                { name: 'Jan 5', cpu: 48, memory: 50, gpu: 22 },
+                { name: 'Jan 6', cpu: 62, memory: 58, gpu: 30 },
+                { name: 'Jan 7', cpu: 55, memory: 53, gpu: 27 }
+              ]}
+              title="Resource Usage Trends"
+              subtitle="7-day average resource consumption"
+            />
+          </GlowCard>
         </motion.div>
 
         {/* Cost Trends Chart */}
-        <motion.div variants={itemVariants}>
-          <AdvancedCharts 
-            type="cost-trends"
-            data={[
-              { date: '2024-01-01', total_cost: 1200 },
-              { date: '2024-01-02', total_cost: 1350 },
-              { date: '2024-01-03', total_cost: 1100 },
-              { date: '2024-01-04', total_cost: 1400 },
-              { date: '2024-01-05', total_cost: 1250 },
-              { date: '2024-01-06', total_cost: 1300 },
-              { date: '2024-01-07', total_cost: 1450 }
-            ]}
-            title="Cost Trends"
-            subtitle="7-day cost analysis"
-          />
+        <motion.div 
+          variants={itemVariants}
+          whileHover={{ 
+            y: -8,
+            transition: { duration: 0.3, ease: "easeOut" }
+          }}
+        >
+          <GlowCard glowColor="white" customSize className="w-full h-auto p-6 hover:bg-white/10 transition-all duration-300">
+            <AdvancedCharts 
+              type="cost-trends"
+              data={[
+                { date: '2024-01-01', total_cost: 1200 },
+                { date: '2024-01-02', total_cost: 1350 },
+                { date: '2024-01-03', total_cost: 1100 },
+                { date: '2024-01-04', total_cost: 1400 },
+                { date: '2024-01-05', total_cost: 1250 },
+                { date: '2024-01-06', total_cost: 1300 },
+                { date: '2024-01-07', total_cost: 1450 }
+              ]}
+              title="Cost Trends"
+              subtitle="7-day cost analysis"
+            />
+          </GlowCard>
         </motion.div>
       </motion.div>
 
       {/* Recent Workloads */}
-      <div className="glass-dark p-6 rounded-xl border border-gray-700/50">
+      <GlowCard glowColor="white" customSize className="w-full h-auto p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-white">Recent Workloads</h3>
-          <button className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors">
+          <button className="text-white/70 hover:text-white text-sm font-medium transition-colors">
             View all
           </button>
         </div>
@@ -435,16 +426,16 @@ const Dashboard = () => {
             ))
           )}
         </div>
-      </div>
+      </GlowCard>
 
       {/* Recent Activity */}
       {dashboardStats?.recent_activity && dashboardStats.recent_activity.length > 0 && (
-        <div className="glass-dark p-6 rounded-xl border border-gray-700/50">
+        <GlowCard glowColor="white" customSize className="w-full h-auto p-6">
           <h3 className="text-lg font-semibold text-white mb-6">Recent Activity</h3>
           <div className="space-y-3">
             {dashboardStats.recent_activity.map((activity, index) => (
               <div key={index} className="flex items-center space-x-3 p-3 bg-gray-800/30 rounded-lg">
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-white/60 rounded-full"></div>
                 <div className="flex-1">
                   <p className="text-sm text-white">{activity.action}</p>
                   <p className="text-xs text-gray-400">
@@ -457,7 +448,7 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
-        </div>
+        </GlowCard>
       )}
     </motion.div>
   );
