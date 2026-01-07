@@ -1,7 +1,7 @@
 [build]
   base = "."
   publish = "frontend/build"
-  command = "cd frontend && npm install --silent && npm run build-silent"
+  command = "cd frontend && npm install --legacy-peer-deps --silent && npm run build-silent"
 
 [build.environment]
   NODE_VERSION = "18"

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "AI Infrastructure Orchestration Platform with RAG",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
+    "build": "cd frontend && npm install --legacy-peer-deps && npm run build",
     "dev": "cd frontend && npm start",
     "netlify:dev": "netlify dev",
-    "install": "cd frontend && npm install"
+    "install": "cd frontend && npm install --legacy-peer-deps"
   },
   "keywords": ["ai", "infrastructure", "rag", "netlify", "react"],
   "author": "Arivunidhi A",
