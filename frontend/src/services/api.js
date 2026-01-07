@@ -1,4 +1,18 @@
 import axios from 'axios';
+import { isBackendHealthy } from './health';
+import {
+  mockWorkloads,
+  mockDashboardStats,
+  mockOptimizations,
+  mockCostAnalysis,
+  mockEfficiencyAnalysis,
+  mockSavingsSummary,
+  mockPerformanceTrends,
+  mockRAGResponse,
+  mockRAGDocuments,
+  createMockResponse,
+  mockApiCall
+} from './mockData';
 
 // Create axios instance with base configuration
 const api = axios.create({
@@ -8,6 +22,31 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+// Helper function to wrap API calls with fallback to mock data
+const withFallback = async (apiCall, mockData, showDemoMode = true) => {
+  try {
+    // Check if backend is healthy
+    if (!isBackendHealthy()) {
+      if (showDemoMode) {
+        console.log('Backend unavailable, using mock data');
+      }
+      return createMockResponse(mockData);
+    }
+    
+    // Try real API call
+    const response = await apiCall();
+    return response;
+  } catch (error) {
+    // If API call fails, use mock data
+    console.warn('API call failed, falling back to mock data:', error.message);
+    if (showDemoMode) {
+      // Show demo mode banner (can be handled by components)
+      window.dispatchEvent(new CustomEvent('demo-mode-active'));
+    }
+    return createMockResponse(mockData);
+  }
+};
 
 // Request interceptor
 api.interceptors.request.use(
@@ -46,167 +85,292 @@ api.interceptors.response.use(
 export const workloadAPI = {
   // Get all workloads
   getWorkloads: (skip = 0, limit = 100) => 
-    api.get('/workloads'),
+    withFallback(
+      () => api.get('/workloads'),
+      mockWorkloads
+    ),
   
   // Get specific workload
   getWorkload: (id) => 
-    api.get('/workloads'),
+    withFallback(
+      () => api.get(`/workloads/${id}`),
+      mockWorkloads.find(w => w.id === id) || mockWorkloads[0]
+    ),
   
   // Create workload
   createWorkload: (workloadData) => 
-    api.post('/workloads/', workloadData),
+    withFallback(
+      () => api.post('/workloads/', workloadData),
+      { ...workloadData, id: Date.now().toString(), created_at: Date.now().toString() },
+      false // Don't show demo mode for writes
+    ),
   
   // Update workload
   updateWorkload: (id, workloadData) => 
-    api.put(`/workloads/${id}`, workloadData),
+    withFallback(
+      () => api.put(`/workloads/${id}`, workloadData),
+      { ...workloadData, id, updated_at: Date.now().toString() },
+      false
+    ),
   
   // Delete workload
   deleteWorkload: (id) => 
-    api.delete(`/workloads/${id}`),
+    withFallback(
+      () => api.delete(`/workloads/${id}`),
+      { success: true },
+      false
+    ),
   
   // Start workload
   startWorkload: (id) => 
-    api.post(`/workloads/${id}/start`),
+    withFallback(
+      () => api.post(`/workloads/${id}/start`),
+      { ...mockWorkloads.find(w => w.id === id), status: 'running' },
+      false
+    ),
   
   // Stop workload
   stopWorkload: (id) => 
-    api.post(`/workloads/${id}/stop`),
+    withFallback(
+      () => api.post(`/workloads/${id}/stop`),
+      { ...mockWorkloads.find(w => w.id === id), status: 'stopped' },
+      false
+    ),
   
   // Get workload optimization
   getWorkloadOptimization: (id) => 
-    api.get('/optimization'),
+    withFallback(
+      () => api.get('/optimization'),
+      mockOptimizations.filter(o => o.workload_id === id)
+    ),
   
   // Get workload cost analysis
   getWorkloadCostAnalysis: (id) => 
-    api.get('/optimization'),
+    withFallback(
+      () => api.get('/cost-analysis'),
+      mockCostAnalysis
+    ),
 };
 
 // Monitoring API
 export const monitoringAPI = {
   // Get dashboard stats
   getDashboardStats: () => 
-    api.get('/metrics'),
+    withFallback(
+      () => api.get('/metrics'),
+      mockDashboardStats
+    ),
   
   // Get workload metrics
   getWorkloadMetrics: (workloadId, hours = 24) => 
-    api.get('/metrics'),
+    withFallback(
+      () => api.get(`/metrics/${workloadId}?hours=${hours}`),
+      []
+    ),
   
   // Create metric
   createMetric: (metricData) => 
-    api.post('/metrics', metricData),
+    withFallback(
+      () => api.post('/metrics', metricData),
+      { ...metricData, id: Date.now().toString() },
+      false
+    ),
   
   // Get resource usage summary
   getResourceUsageSummary: () => 
-    api.get('/metrics'),
+    withFallback(
+      () => api.get('/metrics'),
+      mockDashboardStats
+    ),
   
   // Get performance trends
   getPerformanceTrends: (days = 7) => 
-    api.get('/performance'),
+    withFallback(
+      () => api.get(`/performance?days=${days}`),
+      mockPerformanceTrends
+    ),
   
   // Generate sample metrics
   generateSampleMetrics: (workloadId, count = 10) => 
-    api.post('/metrics', { workloadId, count }),
+    withFallback(
+      () => api.post('/metrics', { workloadId, count }),
+      { success: true, count },
+      false
+    ),
   
   // Get system alerts
   getSystemAlerts: () => 
-    api.get('/metrics'),
+    withFallback(
+      () => api.get('/metrics'),
+      []
+    ),
 };
 
 // Optimization API
 export const optimizationAPI = {
   // Get optimization recommendations
   getRecommendations: (statusFilter = null, limit = 50) => 
-    api.get('/optimization'),
+    withFallback(
+      () => api.get(`/optimization${statusFilter ? `?status_filter=${statusFilter}` : ''}`),
+      mockOptimizations
+    ),
   
   // Get workload optimizations
   getWorkloadOptimizations: (workloadId) => 
-    api.get('/optimization'),
+    withFallback(
+      () => api.get('/optimization'),
+      mockOptimizations.filter(o => o.workload_id === workloadId)
+    ),
   
   // Generate optimization recommendations
   generateRecommendations: () => 
-    api.post('/optimization'),
+    withFallback(
+      () => api.post('/optimization'),
+      mockOptimizations,
+      false
+    ),
   
   // Apply optimization
   applyOptimization: (recommendationId) => 
-    api.post('/optimization'),
+    withFallback(
+      () => api.post(`/optimization/${recommendationId}/apply`),
+      { ...mockOptimizations[0], status: 'applied' },
+      false
+    ),
   
   // Reject optimization
   rejectOptimization: (recommendationId) => 
-    api.post('/optimization'),
+    withFallback(
+      () => api.post(`/optimization/${recommendationId}/reject`),
+      { success: true },
+      false
+    ),
   
   // Get cost analysis
   getCostAnalysis: () => 
-    api.get('/cost-analysis'),
+    withFallback(
+      () => api.get('/cost-analysis'),
+      mockCostAnalysis
+    ),
   
   // Get efficiency analysis
   getEfficiencyAnalysis: () => 
-    api.get('/efficiency-analysis'),
+    withFallback(
+      () => api.get('/efficiency-analysis'),
+      mockEfficiencyAnalysis
+    ),
   
   // Get auto-scaling recommendations
   getAutoScalingRecommendations: () => 
-    api.get('/optimization'),
+    withFallback(
+      () => api.get('/optimization'),
+      mockOptimizations
+    ),
   
   // Get savings summary
   getSavingsSummary: () => 
-    api.get('/savings-summary'),
+    withFallback(
+      () => api.get('/savings-summary'),
+      mockSavingsSummary
+    ),
   
   // Delete optimization
   deleteOptimization: (recommendationId) => 
-    api.delete('/optimization'),
+    withFallback(
+      () => api.delete(`/optimization/${recommendationId}`),
+      { success: true },
+      false
+    ),
 };
 
 // RAG API
 export const ragAPI = {
   // Query RAG system
   queryRAG: (question) => 
-    api.post('/rag', { query: question }),
+    withFallback(
+      () => api.post('/rag', { query: question }),
+      mockRAGResponse
+    ),
   
   // Get query history
   getQueryHistory: (limit = 20, skip = 0) => 
-    api.get('/rag'),
+    withFallback(
+      () => api.get('/rag'),
+      mockRAGDocuments
+    ),
   
   // Get suggested questions
   getSuggestedQuestions: () => 
-    api.get('/rag'),
+    withFallback(
+      () => api.get('/rag'),
+      mockRAGDocuments.suggested_questions
+    ),
   
   // Upload document
   uploadDocument: (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    return api.post('/rag', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    return withFallback(
+      () => api.post('/rag/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }),
+      { success: true, message: 'Document uploaded (demo mode)', document_id: Date.now().toString() },
+      false
+    );
   },
   
   // Create document
   createDocument: (title, content, docType = 'guide') => 
-    api.post('/rag/docs', { title, content, doc_type: docType }),
+    withFallback(
+      () => api.post('/rag/docs', { title, content, doc_type: docType }),
+      { success: true, id: Date.now().toString() },
+      false
+    ),
   
   // Get documents
   getDocuments: (docType = null, limit = 50, skip = 0) => 
-    api.get('/rag'),
+    withFallback(
+      () => api.get('/rag'),
+      mockRAGDocuments.documents
+    ),
   
   // Get specific document
   getDocument: (documentId) => 
-    api.get('/rag'),
+    withFallback(
+      () => api.get(`/rag/${documentId}`),
+      mockRAGDocuments.documents.find(d => d.id === documentId) || mockRAGDocuments.documents[0]
+    ),
   
   // Delete document
   deleteDocument: (documentId) => 
-    api.delete('/rag'),
+    withFallback(
+      () => api.delete(`/rag/${documentId}`),
+      { success: true },
+      false
+    ),
   
   // Search documents
   searchDocuments: (query, limit = 10) => 
-    api.get('/rag'),
+    withFallback(
+      () => api.get(`/rag/search?query=${query}&limit=${limit}`),
+      mockRAGDocuments.documents
+    ),
   
   // Get RAG stats
   getRAGStats: () => 
-    api.get('/rag'),
+    withFallback(
+      () => api.get('/rag'),
+      { documents: mockRAGDocuments.documents.length, queries: 0 }
+    ),
   
   // Get specific query
   getQuery: (queryId) => 
-    api.get('/rag'),
+    withFallback(
+      () => api.get(`/rag/query/${queryId}`),
+      mockRAGResponse
+    ),
 };
 
 // Utility functions

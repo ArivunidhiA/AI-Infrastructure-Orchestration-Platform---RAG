@@ -3,8 +3,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
-from database import create_tables, init_sample_data
-from routes import workloads, monitoring, optimization, rag
+from backend.database import create_tables, init_sample_data
+from backend.routes import workloads, monitoring, optimization, rag, auth
+from backend.config.settings import get_settings
+from backend.utils.logging import setup_logging
+
+# Setup logging
+logger = setup_logging()
+
+# Get settings
+settings = get_settings()
 
 # Create FastAPI app
 app = FastAPI(
@@ -18,7 +26,7 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify actual frontend URL
+    allow_origins=settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -29,6 +37,7 @@ app.include_router(workloads.router)
 app.include_router(monitoring.router)
 app.include_router(optimization.router)
 app.include_router(rag.router)
+app.include_router(auth.router)
 
 # Root endpoint - serve React app
 @app.get("/")
@@ -46,23 +55,43 @@ async def root():
 # Health check endpoint
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "message": "API is running"}
+    """Health check with database connectivity test"""
+    try:
+        from backend.database import dynamodb_client, TABLES
+        # Test DynamoDB connectivity
+        table_name = TABLES['workloads']
+        dynamodb_client.describe_table(TableName=table_name)
+        return {
+            "status": "healthy",
+            "message": "API is running",
+            "database": "connected"
+        }
+    except Exception as e:
+        logger.warning(f"Health check failed: {e}")
+        return {
+            "status": "degraded",
+            "message": "API is running but database connection failed",
+            "database": "disconnected",
+            "error": str(e)
+        }
 
 # Initialize database and sample data
 @app.on_event("startup")
 async def startup_event():
     """Initialize database and sample data on startup"""
     try:
+        logger.info("Starting up application...")
         # Create database tables
         create_tables()
-        print("Database tables created successfully")
+        logger.info("Database tables created successfully")
         
-        # Initialize sample data
-        init_sample_data()
-        print("Sample data initialized successfully")
+        # Initialize sample data (only in development)
+        if settings.environment == "development":
+            init_sample_data()
+            logger.info("Sample data initialized successfully")
         
     except Exception as e:
-        print(f"Error during startup: {e}")
+        logger.error(f"Error during startup: {e}", exc_info=True)
 
 # Serve static files for frontend
 if os.path.exists("static"):

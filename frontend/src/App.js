@@ -11,6 +11,7 @@ import RAGAssistant from './components/RAGAssistant';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import ErrorBoundary from './components/ErrorBoundary';
+import DemoModeBanner from './components/DemoModeBanner';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true); // Open by default
@@ -62,6 +63,7 @@ function App() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
+      <DemoModeBanner />
       <Toaster
         position="top-right"
         toastOptions={{
