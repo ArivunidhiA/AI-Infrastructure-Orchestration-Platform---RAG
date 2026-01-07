@@ -149,18 +149,18 @@ const AdvancedCharts = ({ type, data, title, subtitle }) => {
       case 'resource-usage-trends':
         return (
           <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={data} margin={{ top: 20, right: 30, left: 30, bottom: 80 }}>
+            <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
               <XAxis 
                 dataKey="name" 
                 stroke="#9ca3af"
-                fontSize={11}
+                fontSize={12}
                 angle={0}
                 textAnchor="middle"
-                height={120}
+                height={60}
                 interval={0}
                 tick={{ 
-                  fontSize: 10,
+                  fontSize: 12,
                   fill: '#9ca3af'
                 }}
               />

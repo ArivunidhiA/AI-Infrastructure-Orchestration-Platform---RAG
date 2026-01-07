@@ -262,26 +262,13 @@ const RAGAssistant = () => {
             <GlowCard glowColor="white" customSize className="w-full h-[600px] flex flex-col p-0">
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {messages.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Bot className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-white mb-2">Welcome to AI Assistant</h3>
-                    <p className="text-gray-400 mb-6">Ask me anything about your infrastructure setup, optimization, or troubleshooting</p>
-                    
-                    {/* Suggested Questions */}
-                    <div className="space-y-2">
-                      {Array.isArray(suggestedQuestions) ? suggestedQuestions.slice(0, 3).map((question, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleSuggestedQuestion(question)}
-                          className="block w-full text-left p-3 bg-gray-800/50 rounded-lg hover:bg-gray-700/50 transition-colors text-sm text-gray-300 hover:text-white"
-                        >
-                          {question}
-                        </button>
-                      )) : []}
-                    </div>
-                  </div>
-                ) : (
+                    {messages.length === 0 ? (
+                      <div className="text-center py-12">
+                        <Bot className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-white mb-2">Welcome to AI Assistant</h3>
+                        <p className="text-gray-400 mb-6">Ask me anything about your infrastructure setup, optimization, or troubleshooting</p>
+                      </div>
+                    ) : (
                   messages.map((message) => (
                     <div
                       key={message.id}

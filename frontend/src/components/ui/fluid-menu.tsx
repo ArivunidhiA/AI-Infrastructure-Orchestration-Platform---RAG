@@ -58,14 +58,14 @@ interface MenuItemProps {
 export function MenuItem({ children, onClick, disabled = false, icon, isActive = false, label }: MenuItemProps) {
   return (
     <button
-      className={`relative block w-full text-center group
+      className={`relative block w-full text-left group
         ${disabled ? "text-white/40 cursor-not-allowed" : "text-white"}
       `}
       role="menuitem"
       onClick={onClick}
       disabled={disabled}
     >
-      <div className="flex flex-col items-center justify-center h-full py-2">
+      <div className="flex flex-col items-start justify-center h-full py-2">
         {icon && (
           <span className={`relative flex items-center justify-center w-12 h-12 mb-2 rounded-full transition-all duration-200 ${
             isActive 
@@ -107,7 +107,7 @@ export function MenuContainer({ children }: { children: React.ReactNode }) {
       <div className="relative">
         {/* First item - always visible */}
         <div 
-          className="relative w-16 h-16 bg-transparent cursor-pointer rounded-full group will-change-transform z-50 flex items-center justify-center"
+          className="relative w-16 h-16 bg-transparent cursor-pointer rounded-full group will-change-transform z-50 flex items-center justify-start"
           onClick={handleToggle}
         >
           {childrenArray[0]}
@@ -117,7 +117,7 @@ export function MenuContainer({ children }: { children: React.ReactNode }) {
         {childrenArray.slice(1).map((child, index) => (
           <div 
             key={index} 
-            className="absolute top-0 left-0 w-24 h-24 bg-transparent will-change-transform"
+            className="absolute top-0 left-0 w-24 h-24 bg-transparent will-change-transform flex items-start"
             style={{
               transform: `translateY(${isExpanded ? (index + 1) * 90 : 0}px)`,
               opacity: isExpanded ? 1 : 0,
